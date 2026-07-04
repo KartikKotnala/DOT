@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Brand Collections</title>
+    <style>
+        /* Modern Reset & Base Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background-color: #0b0c10; /* Sleek dark theme */
+            color: #fff;
+            min-height: 100vh;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #666;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        /* Brands Grid Section */
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 40px;
+        }
+
+        /* Brand Card Styling */
+        .brand-card {
+            background: #1f2833;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
+            position: relative;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 242, 254, 0.15);
+        }
+
+        /* Image Container */
+        .brand-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            overflow: hidden;
+        }
+
+        .brand-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .brand-card:hover .brand-image-wrapper img {
+            transform: scale(1.08);
+        }
+
+        /* Gradient Overlay on Image */
+        .brand-image-wrapper::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(to top, rgba(31, 40, 51, 1), rgba(31, 40, 51, 0));
+        }
+
+        /* Brand Text Details */
+        .brand-info {
+            padding: 25px;
+            text-align: center;
+            background: #1f2833;
+        }
+
+        .brand-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .brand-tagline {
+            color: #85929E;
+            font-size: 0.9rem;
+        }
+
+        /* Products Showcase Overlay Drawer */
+        .products-panel {
+            grid-column: 1 / -1; /* Makes the product drawer span the full width of the grid row */
+            background: #151c24;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            display: none; /* Hidden by default */
+            border: 1px solid rgba(0, 242, 254, 0.2);
+            animation: fadeInSlide 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #2c3b4e;
+            padding-bottom: 15px;
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00f2fe;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #ff4757;
+        }
+
+        /* Product Cards Inner Grid */
+        .products-inner-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: #1f2833;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #e0e0e0;
+        }
+
+        .product-price {
+            color: #00f2fe;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Curated Collections</h1>
+            <p>Click a brand to explore exclusive creations</p>
+        </header>
+
+        <!-- Main Grid for Brands -->
+        <div class="brands-grid" id="brandsGrid">
+            
+            <!-- BRAND 1: APEX -->
+            <div class="brand-card" onclick="openProducts('apex')">
+                <div class="brand-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=600" alt="Apex Tech">
+                </div>
+                <div class="brand-info">
+                    <h2 class="brand-name">Apex Labs</h2>
+                    <p class="brand-tagline">Next-generation premium wearables</p>
+                </div>
+            </div>
+
+            <!-- BRAND 2: Vellum -->
+            <div class="brand-card" onclick="openProducts('vellum')">
+                <div class="brand-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1581605405669-fcdf81165afa?auto=format&fit=crop&q=80&w=600" alt="Vellum Design">
+                </div>
+                <div class="brand-info">
+                    <h2 class="brand-name">Vellum Studio</h2>
+                    <p class="brand-tagline">Minimalist, architectural carry-goods</p>
+                </div>
+            </div>
+
+            <!-- BRAND 3: Aura -->
+            <div class="brand-card" onclick="openProducts('aura')">
+                <div class="brand-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&q=80&w=600" alt="Aura Living">
+                </div>
+                <div class="brand-info">
+                    <h2 class="brand-name">Aura Home</h2>
+                    <p class="brand-tagline">Luxury organic interior comforts</p>
+                </div>
+            </div>
+
+            <!-- DYNAMIC PRODUCT EXPANSION PANEL -->
+            <div class="products-panel" id="productsPanel">
+                <div class="panel-header">
+                    <h2 class="panel-title" id="panelTitle">Brand Products</h2>
+                    <button class="close-btn" onclick="closeProducts()">&times;</button>
+                </div>
+                <div class="products-inner-grid" id="productsInnerGrid">
+                    <!-- Dynamic Product Cards injected via JavaScript -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Data Structure holding products for each brand
+        const brandDatabase = {
+            apex: {
+                name: "Apex Labs Showcase",
+                products: [
+                    { title: "Chrono Smartwatch X", price: "$299", img: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&q=80&w=300" },
+                    { title: "Sonic ANC Earbuds", price: "$180", img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&q=80&w=300" },
+                    { title: "MagSafe Charging Hub", price: "$85", img: "https://images.unsplash.com/photo-1622445262465-2481c4574875?auto=format&fit=crop&q=80&w=300" }
+                ]
+            },
+            vellum: {
+                name: "Vellum Studio Lineup",
+                products: [
+                    { title: "Sleek Leather Backpack", price: "$240", img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&q=80&w=300" },
+                    { title: "Minimalist Card Wallet", price: "$65", img: "https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&q=80&w=300" },
+                    { title: "Waterproof Tech Pouch", price: "$75", img: "https://images.unsplash.com/photo-1600857544200-b2f666a9a3ec?auto=format&fit=crop&q=80&w=300" }
+                ]
+            },
+            aura: {
+                name: "Aura Home Essentials",
+                products: [
+                    { title: "Ceramic Scent Diffuser", price: "$90", img: "https://images.unsplash.com/photo-1602928321679-560bb453f190?auto=format&fit=crop&q=80&w=300" },
+                    { title: "Waffle-Weave Throw", price: "$110", img: "https://images.unsplash.com/photo-1580301762395-21ce84d00bc6?auto=format&fit=crop&q=80&w=300" },
+                    { title: "Minimalist Lounge Chair", price: "$450", img: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&q=80&w=300" }
+                ]
+            }
+        };
+
+        function openProducts(brandKey) {
+            const panel = document.getElementById('productsPanel');
+            const title = document.getElementById('panelTitle');
+            const grid = document.getElementById('productsInnerGrid');
+            const targetBrand = brandDatabase[brandKey];
+
+            // 1. Set the Title
+            title.innerText = targetBrand.name;
+
+            // 2. Clear old products and add new ones dynamically
+            grid.innerHTML = '';
+            targetBrand.products.forEach(product => {
+                const cardHTML = `
+                    <div class="product-card">
+                        <img src="${product.img}" alt="${product.title}">
+                        <h3 class="product-title">${product.title}</h3>
+                        <p class="product-price">${product.price}</p>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+
+            // 3. Move the panel right below the clicked item cleanly (or keep at base grid)
+            // Show the drawer smoothly
+            panel.style.display = 'block';
+            
+            // Auto scroll down slightly to ensure the products are perfectly visible
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function closeProducts() {
+            document.getElementById('productsPanel').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

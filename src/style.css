@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", sans-serif;
+}
+
+
+:root, [data-theme="dark"] {
+  --bg-app: #000000;          
+  --panel-glow: rgba(239, 68, 68, 0.15); 
+  --accent: #ef4444;              
+  --panel-bg: rgba(15, 15, 15, 0.6);
+  --border-color: rgba(255, 255, 255, 0.15);
+  --text-main: #ffffff;
+}
+
+[data-theme="green"] {
+  --bg-app: #021a14;              
+  --panel-glow: rgba(16, 185, 129, 0.2);
+  --accent: #10b981;              
+  --panel-bg: rgba(6, 31, 26, 0.6);
+  --border-color: rgba(16, 185, 129, 0.25);
+  --text-main: #f0fdf4;
+}
+
+[data-theme="blue"] {
+  --bg-app: #020617;              
+  --panel-glow: rgba(59, 130, 246, 0.2);
+  --accent: #3b82f6;              
+  --panel-bg: rgba(15, 23, 42, 0.6);
+  --border-color: rgba(59, 130, 246, 0.25);
+  --text-main: #f8fafc;
+}
+
+[data-theme="light"] {
+  --bg-app: #f4f4f5;              
+  --panel-glow: rgba(24, 24, 27, 0.04);
+  --accent: #18181b;              
+  --panel-bg: rgba(255, 255, 255, 0.8);
+  --border-color: rgba(24, 24, 27, 0.1);
+  --text-main: #09090b;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app); 
+  color: var(--text-main);
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.3s ease;
+}
+
+.font-dot {
+  font-family: 'DotGothic16', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+
+.ambient-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+  background-size: 20px 20px;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.5;
+  transition: background-image 0.4s ease;
+}
+
+
+.glass-panel {
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.glass-panel:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--accent); 
+  box-shadow: 0 10px 30px var(--panel-glow);
+}
+
+@keyframes ken-burns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.15); }
+}
+
+[data-theme="orange"] {
+  --bg-app: #0c0600;              
+  --panel-glow: rgba(249, 115, 22, 0.2); 
+  --accent: #f97316;             
+  --panel-bg: rgba(25, 14, 5, 0.6);    
+  --border-color: rgba(249, 115, 22, 0.25); 
+  --text-main: #fff7ed;        
+  --text-muted: rgba(249, 115, 22, 0.5);
+}
+.animate-ken-burns {
+  animation: ken-burns 4.5s ease-out forwards;
+}
