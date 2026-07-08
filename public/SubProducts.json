@@ -1,0 +1,54 @@
+[
+  {
+    "id": "p1",
+    "brandId": "b1",
+    "name": "iPhone 15 Pro",
+    "price": 93399,
+    "storage": "256GB",
+    "image": "iphone_15_pro.jpg",
+    "description": "The ultimate iPhone with titanium design and A17 Pro chip.",
+    "floor": 1,
+    "mapX": 520,
+    "mapY": 495,
+    "path": "M 400 550 L 400 295 L 520 295"
+  },
+  {
+    "id": "p2",
+    "brandId": "b1",
+    "name": "iPhone 14 Plus",
+    "price": 3799,
+    "storage": "128GB",
+    "image": "iphone_14.jpg",
+    "description": "Super-sized display and incredibly long battery life.",
+    "floor": 1,
+    "mapX": 510,
+    "mapY": 285,
+    "path": "M 400 550 L 400 295 L 510 295"
+  },
+  {
+    "id": "p3",
+    "brandId": "b4",
+    "name": "Nothing Phone (2)",
+    "price": 23599,
+    "storage": "256GB",
+    "image": "nothing_2.jpg",
+    "description": "Come to the bright side. Iconic Glyph Interface.",
+    "floor": 1,
+    "mapX": 110,
+    "mapY": 190,
+    "path": "M 400 550 L 400 460 L 210 460 L 210 190 L 110 190"
+  },
+  {
+    "id": "p4",
+    "brandId": "b4",
+    "name": "Nothing Phone (3a)",
+    "price": 31299,
+    "storage": "256GB",
+    "image": "nothing_3.jpg",
+    "description": "Powerfully unique. Stunning performance.",
+    "floor": 1,
+    "mapX": 100,
+    "mapY": 200,
+    "path": "M 400 550 L 400 460 L 210 460 L 210 190 L 100 190"
+  }
+]

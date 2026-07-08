@@ -62,7 +62,7 @@
       <div>
 
         <h2 class="text-4xl font-dot tracking-widest text-white/90 mb-2 uppercase">
-          DOT EXPERIENCE
+          Mall EXPERIENCE
         </h2>
 
         <p class="text-white/60 max-w-md">
@@ -98,12 +98,14 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 
-import img1 from "@/assets/images/images.jpeg";
+import img1 from "@/assets/images/dominos.jpg";
 import img2 from "@/assets/images/images-2.jpeg";
 import img3 from "@/assets/images/images-3.jpeg";
 import img4 from "@/assets/images/images-4.jpeg";
 import img5 from "@/assets/images/images-5.jpeg";
 import img6 from "@/assets/images/images-6.jpeg";
+
+
 
 const images = [img1, img2, img3, img4, img5, img6];
 

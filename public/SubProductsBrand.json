@@ -1,0 +1,105 @@
+[
+  {
+    "id": "b1",
+    "ProductsNamesid": "1",
+    "name": "Apple",
+    "image": "sample_apple.jpg"
+  },
+  {
+    "id": "b2",
+    "ProductsNamesid": "1",
+    "name": "Samsung",
+    "image": "samsung-1.jpg"
+  },
+  {
+    "id": "b3",
+    "ProductsNamesid": "1",
+    "name": "OnePlus",
+    "image": "oneplus-1.jpg"
+  },
+  {
+    "id": "b4",
+    "ProductsNamesid": "1",
+    "name": "Nothing",
+    "image": "sample_not.jpg"
+  },
+  {
+    "id":"b5",
+    "ProductsNamesid":"2",
+    "name":"Nike",
+    "image":"Nike2.jpg"
+  },
+  {
+    "id":"b6",
+    "ProductsNamesid":"2",
+    "name":"UCB",
+    "image":"UCB.jpg"
+
+  },
+  {
+    "id":"b7",
+    "ProductsNamesid":"2",
+    "name":"Adidas",
+    "image":"Adidas.jpg"
+  },
+  {
+    "id":"b8",
+    "ProductsNamesid":"3",
+    "name":"Puma",
+    "image":"Puma.jpg"
+  },
+  {
+    "id":"b9",
+    "ProductsNamesid":"3",
+    "name":"Jordans",
+    "image":"Jordan.jpg"
+  },
+  {
+    "id":"b10",
+    "ProductsNamesid":"4",
+    "name":"Decathalon",
+    "image":"Decathalon.jpg"
+  },
+  {
+    "id":"b11",
+    "ProductsNamesid":"5",
+    "name":"Tanishq",
+    "image":"Tanishq.jpg"
+  },
+  {
+    "id":"b12",
+    "ProductsNamesid":"6",
+    "name":"Bella Vita",
+    "image":"Bellavita.jpg"
+  },
+  {
+    "id":"b13",
+    "ProductsNamesid":"7",
+    "name":"Appolo",
+    "image":"appolo.jpg"
+  },
+  {
+    "id":"b14",
+    "ProductsNamesid":"8",
+    "name":"KFC",
+    "image":"kfc.jpg"
+  },
+  {
+    "id":"b15",
+    "ProductsNamesid":"8",
+    "name":"McD",
+    "image":"mcd.jpg"
+  },
+  {
+    "id":"b16",
+    "ProductsNamesid":"8",
+    "name":"Pizza Hut",
+    "image":"pizzahut.jpg"
+  },
+  {
+    "id":"b17",
+    "ProductsNamesid":"8",
+    "name":"Dominos",
+    "image":"dominos.jpg"
+  }
+]

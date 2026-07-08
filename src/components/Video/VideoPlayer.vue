@@ -48,7 +48,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { Play, Pause, Aperture } from "lucide-vue-next";
-import showcaseVideo from "@/assets/videos/video.mp4";
+import showcaseVideo from "@/assets/videos/mallvideo.mp4";
 
 const videoPlayer = ref(null);
 

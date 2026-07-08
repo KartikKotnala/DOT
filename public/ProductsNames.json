@@ -1,0 +1,50 @@
+[
+    {
+    "id": "1" ,
+    "name" : "Phone",
+    "picture" : ["sample_apple.jpg" , "samsung-3.jpg" , "samsung-1.jpg", "oneplus-1.jpg","sample_not-2.jpg","samsung-2.jpg" ],
+    "description" : "Explore the latest smartphones, accessories, and mobile gadgets from leading brands."
+    },
+    {
+    "id": "2" ,
+    "name" : "Fashion & Clothing",
+    "picture" : ["Boutique.jpg" ],
+    "description" : "Discover stylish clothing and apparel for men, women, and kids."
+    },
+    {
+    "id": "3" ,
+    "name" : "Footwear",
+    "picture" : ["footwear.jpg" ],
+    "description" : "Shop trendy and comfortable shoes, sandals, sneakers, and formal footwear."
+    },
+    {
+    "id": "4" ,
+    "name" : "Sports & Fitness",
+    "picture" : ["WHOOP SuperKnit Accessory Band 4_0 Moss 959-02-014-000011.jpg"  ],
+    "description" : "Find sportswear, footwear, fitness equipment, and accessories for an active lifestyle."
+    },
+    {
+    "id": "5" ,
+    "name" : "Jewelry",
+    "picture" : ["jewel.jpg"  ],
+    "description" : "Browse elegant gold, silver, diamond, and fashion jewelry for every occasion."
+    },
+    {
+    "id": "6" ,
+    "name" : "Perfumes",
+    "picture" : ["perfume.jpg"  ],
+    "description" : "Explore premium fragrances, perfumes, deodorants, and personal care essentials."
+    },
+    {
+    "id": "7" ,
+    "name" : "Pharmacy",
+    "picture" : ["pharmacy.jpg"  ],
+    "description" : "Get medicines, healthcare products, wellness essentials, and daily medical needs."
+    },
+    {
+    "id": "8" ,
+    "name" : "Food Court",
+    "picture" : ["mcd.jpg"  ],
+    "description" : "Enjoy a variety of cuisines, quick bites, beverages, and desserts all in one place."
+    }
+]

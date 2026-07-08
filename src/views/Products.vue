@@ -17,13 +17,13 @@
     </div>
 
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 mt-4">
       
       <div 
         v-for="item in brands" 
         :key="item.id" 
         @click="goToSubBrand(item.id)"
-        class="hero-card bg-zinc-900/50 p-6 rounded-2xl border border-white/10 flex flex-col justify-between
+        class="hero-card h-130 bg-zinc-900/50 p-7 rounded-2xl border border-white/10 flex flex-col justify-between
         transition-all duration-300 ease-out cursor-pointer
         hover:-translate-y-2 hover:border-red-500/40 hover:shadow-[0_10px_30px_rgba(239,68,68,0.1)]
         group"
@@ -62,7 +62,7 @@ onMounted(async() => {
     .from(".hero-card", { opacity: 0, y: 50, scale: 0.96, duration: 0.8, stagger: 0.2 }, "-=0.2");
     
   try {
-    const response = await fetch('/brand.json');
+    const response = await fetch('/ProductsNames.json');
     brands.value = await response.json();
   } catch(error) {
     console.error("error to load the data", error);

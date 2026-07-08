@@ -69,5 +69,5 @@
 </template>
 
 <script setup>
-import logo from "@/assets/images/logo.png";
+import logo from "@/assets/images/malllogo.png";
 </script>
