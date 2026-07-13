@@ -9,8 +9,8 @@
       class="px-6 py-2 rounded-full text-xs uppercase tracking-[0.25em] font-mono transition-all duration-300"
       :class="
         $route.path === item.path
-          ? 'bg-red-600 text-white font-bold shadow-lg shadow-red-600/30'
-          : 'text-white/50 hover:text-white hover:bg-white/10'
+          ? 'bg-red-600 text-main font-bold shadow-lg shadow-red-600/30'
+          : 'text-main/50 hover:text-main hover:bg-white/10'
       "
     >
       {{ item.name }}
@@ -22,8 +22,8 @@
 const navItems = [
   { name: "Home", path: "/" },
   { name: "Products", path: "/products" },
-  { name: "Gallery", path: "/gallery" },
-  { name: "About", path: "/about" },
-  { name: "Contact", path: "/contact" },
+  { name: "Map", path: "/phone/p1/directions" }, // Defaulting to the map view
+  { name: "Assistant", path: "/assistant" },
+  { name: "Complaint", path: "/contact" },
 ];
 </script>

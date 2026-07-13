@@ -18,7 +18,7 @@
   </video>
 
   <!-- Overlay -->
-  <div class="absolute inset-0 bg-black/25"></div>
+  <div class="absolute inset-0 bg-app/25"></div>
 
   <!-- Controls -->
   <Transition name="fade">
@@ -28,7 +28,7 @@
     >
       <button
         @click="toggleVideo"
-        class="w-16 h-16 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-black hover:scale-110 transition-all duration-300"
+        class="w-16 h-16 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-main hover:scale-110 transition-all duration-300"
       >
         <Play
           v-if="!isPlaying"

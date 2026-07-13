@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full relative overflow-hidden bg-zinc-800 rounded-xl border" :style="{ borderColor: 'var(--border-color)' }">
+  <div class="w-full h-full relative overflow-hidden bg-panel hover:brightness-110 rounded-xl border" :style="{ borderColor: 'var(--border-color)' }">
     
     <TransitionGroup name="slide" v-if="images && images.length > 0">
       <div 
@@ -16,11 +16,11 @@
       </div>
     </TransitionGroup>
     
-    <div v-else class="w-full h-full flex items-center justify-center text-zinc-500 text-sm">
+    <div v-else class="w-full h-full flex items-center justify-center text-muted/60 text-sm">
       No Image Available
     </div>
 
-    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full">
+    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10 bg-app/40 backdrop-blur-sm px-3 py-1.5 rounded-full">
       <span 
         v-for="(img, idx) in images" 
         :key="idx"

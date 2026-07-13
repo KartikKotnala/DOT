@@ -60,21 +60,24 @@ import { Palette, Leaf, Waves, Sun } from "lucide-vue-next";
 // Inject global active theme state channel from App.vue
 const activeTheme = inject("appTheme");
 
-const themes = ["dark", "green", "blue", "orange"];
+const themes = ["dark", "green", "blue", "orange", "light", "light-green", "light-blue"];
 
 // Clean display mapping names matching Nothing OS aesthetics
 const themeNames = {
   dark: "Crimson Black",
   green: "Emerald Matrix",
   blue: "Cobalt Ocean",
-  orange: " Cyber Orange"
+  orange: " Cyber Orange",
+  light: "Pure White",
+  "light-green": "Mint Breeze",
+  "light-blue": "Sky Clear"
 };
 
 // Map dynamic icons to their matching theme aesthetics
 const currentIcon = computed(() => {
-  if (activeTheme.value === "green") return Leaf;
-  if (activeTheme.value === "blue") return Waves;
-  if (activeTheme.value === "orange") return Sun;
+  if (activeTheme.value === "green" || activeTheme.value === "light-green") return Leaf;
+  if (activeTheme.value === "blue" || activeTheme.value === "light-blue") return Waves;
+  if (activeTheme.value === "orange" || activeTheme.value === "light") return Sun;
   return Palette; 
 });
 

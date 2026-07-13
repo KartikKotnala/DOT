@@ -1,9 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Outfit", sans-serif;
+  /* 🌟 FIXED: Tailwind v4 proper font family structure declaration line mapping */
+  --font-sans: "Outfit", system-ui, -apple-system, sans-serif;
+  
+  --color-app: var(--bg-app);
+  --color-panel: var(--panel-bg);
+  --color-main: var(--text-main);
+  --color-muted: var(--text-muted);
+  --color-line: var(--border-color);
+  --color-accent: var(--accent);
 }
-
 
 :root, [data-theme="dark"] {
   --bg-app: #000000;          
@@ -12,6 +19,7 @@
   --panel-bg: rgba(15, 15, 15, 0.6);
   --border-color: rgba(255, 255, 255, 0.15);
   --text-main: #ffffff;
+  --text-muted: #a1a1aa; /* zinc-400 */
 }
 
 [data-theme="green"] {
@@ -21,6 +29,7 @@
   --panel-bg: rgba(6, 31, 26, 0.6);
   --border-color: rgba(16, 185, 129, 0.25);
   --text-main: #f0fdf4;
+  --text-muted: #6ee7b7;
 }
 
 [data-theme="blue"] {
@@ -30,6 +39,17 @@
   --panel-bg: rgba(15, 23, 42, 0.6);
   --border-color: rgba(59, 130, 246, 0.25);
   --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+}
+
+[data-theme="orange"] {
+  --bg-app: #0c0600;              
+  --panel-glow: rgba(249, 115, 22, 0.2); 
+  --accent: #f97316;             
+  --panel-bg: rgba(25, 14, 5, 0.6);    
+  --border-color: rgba(249, 115, 22, 0.25); 
+  --text-main: #fff7ed;        
+  --text-muted: rgba(249, 115, 22, 0.5);
 }
 
 [data-theme="light"] {
@@ -38,11 +58,36 @@
   --accent: #18181b;              
   --panel-bg: rgba(255, 255, 255, 0.8);
   --border-color: rgba(24, 24, 27, 0.1);
-  --text-main: #09090b;
+  --text-main: #000000;
+  --text-muted: #3f3f46;
+}
+
+[data-theme="light-green"] {
+  --bg-app: #ecfdf5;
+  --panel-glow: rgba(16, 185, 129, 0.04);
+  --accent: #10b981;
+  --panel-bg: rgba(255, 255, 255, 0.8);
+  --border-color: rgba(16, 185, 129, 0.2);
+  --text-main: #000000;
+  --text-muted: #065f46;
+}
+
+[data-theme="light-blue"] {
+  --bg-app: #eff6ff;
+  --panel-glow: rgba(59, 130, 246, 0.04);
+  --accent: #3b82f6;
+  --panel-bg: rgba(255, 255, 255, 0.8);
+  --border-color: rgba(59, 130, 246, 0.2);
+  --text-main: #000000;
+  --text-muted: #1e3a8a;
+}
+
+/* 🌟 ENFORCED CORE BASELINE STYLES: This forces EVERYTHING to stay locked in */
+body, input, select, textarea, button {
+  font-family: var(--font-sans) !important;
 }
 
 body {
-  font-family: var(--font-sans);
   background-color: var(--bg-app); 
   color: var(--text-main);
   overflow-x: hidden;
@@ -54,14 +99,12 @@ body {
   letter-spacing: 0.05em;
 }
 
-
 .ambient-glow {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-
   background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
   background-size: 20px 20px;
   z-index: -1;
@@ -69,7 +112,6 @@ body {
   opacity: 0.5;
   transition: background-image 0.4s ease;
 }
-
 
 .glass-panel {
   background: var(--panel-bg);
@@ -91,15 +133,6 @@ body {
   100% { transform: scale(1.15); }
 }
 
-[data-theme="orange"] {
-  --bg-app: #0c0600;              
-  --panel-glow: rgba(249, 115, 22, 0.2); 
-  --accent: #f97316;             
-  --panel-bg: rgba(25, 14, 5, 0.6);    
-  --border-color: rgba(249, 115, 22, 0.25); 
-  --text-main: #fff7ed;        
-  --text-muted: rgba(249, 115, 22, 0.5);
-}
 .animate-ken-burns {
   animation: ken-burns 4.5s ease-out forwards;
 }

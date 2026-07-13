@@ -20,8 +20,8 @@
       <!-- Previous -->
       <button
         @click="previousSlide"
-        class="w-11 h-11 rounded-full bg-black/50 backdrop-blur-md border border-white/10
-               text-white flex items-center justify-center
+        class="w-11 h-11 rounded-full bg-app/50 backdrop-blur-md border border-line
+               text-main flex items-center justify-center
                opacity-0 group-hover:opacity-100
                transition-all duration-300
                hover:bg-red-500 hover:border-red-500 hover:scale-110"
@@ -32,8 +32,8 @@
       <!-- Next -->
       <button
         @click="nextSlide"
-        class="w-11 h-11 rounded-full bg-black/50 backdrop-blur-md border border-white/10
-               text-white flex items-center justify-center
+        class="w-11 h-11 rounded-full bg-app/50 backdrop-blur-md border border-line
+               text-main flex items-center justify-center
                opacity-0 group-hover:opacity-100
                transition-all duration-300
                hover:bg-red-500 hover:border-red-500 hover:scale-110"
@@ -48,12 +48,12 @@
       <div class="flex justify-between">
 
         <span
-          class="text-[10px] uppercase tracking-[0.3em] text-white/50 font-mono"
+          class="text-[10px] uppercase tracking-[0.3em] text-main/50 font-mono"
         >
           PRODUCT INDEX
         </span>
 
-        <span class="text-xs text-white/30 font-mono">
+        <span class="text-xs text-main/30 font-mono">
           0{{ currentImage + 1 }}/0{{ images.length }}
         </span>
 
@@ -61,11 +61,11 @@
 
       <div>
 
-        <h2 class="text-4xl font-dot tracking-widest text-white/90 mb-2 uppercase">
+        <h2 class="text-4xl font-dot tracking-widest text-main/90 mb-2 uppercase">
           Mall EXPERIENCE
         </h2>
 
-        <p class="text-white/60 max-w-md">
+        <p class="text-main/60 max-w-md">
           Discover futuristic products designed with minimalism,
           performance and precision.
         </p>

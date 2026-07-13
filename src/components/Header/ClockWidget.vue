@@ -5,7 +5,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center">
       <span
-        class="text-[10px] uppercase tracking-[0.3em] text-white/40 font-mono"
+        class="text-[10px] uppercase tracking-[0.3em] text-main/40 font-mono"
       >
         CHRONO.SYS
       </span>
@@ -19,12 +19,12 @@
 
     <!-- Time -->
     <div>
-      <h2 class="text-4xl font-dot tracking-widest text-white/90">
+      <h2 class="text-4xl font-dot tracking-widest text-main/90">
         {{ time }}
       </h2>
 
       <div
-        class="flex justify-between items-center mt-2 text-[10px] uppercase tracking-[0.2em] text-white/40 font-mono"
+        class="flex justify-between items-center mt-2 text-[10px] uppercase tracking-[0.2em] text-main/40 font-mono"
       >
         <span>{{ day }}</span>
         <span>{{ date }}</span>

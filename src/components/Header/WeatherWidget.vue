@@ -5,7 +5,7 @@
     <!-- Header -->
     <div class="flex justify-between items-center">
       <span
-        class="text-[10px] uppercase tracking-[0.3em] text-white/40 font-mono"
+        class="text-[10px] uppercase tracking-[0.3em] text-main/40 font-mono"
       >
         METEO.LOC
       </span>
@@ -15,17 +15,17 @@
 
     <!-- Weather -->
     <div>
-      <h2 class="text-4xl font-dot tracking-widest text-white/90">
+      <h2 class="text-4xl font-dot tracking-widest text-main/90">
         {{ temperature }}°C
       </h2>
 
       <div class="flex justify-between items-end mt-2">
-        <p class="text-xs uppercase text-white/60 tracking-wider">
+        <p class="text-xs uppercase text-main/60 tracking-wider">
           {{ condition }}
         </p>
 
         <p
-          class="text-[10px] uppercase text-white/30 tracking-[0.2em] font-mono"
+          class="text-[10px] uppercase text-main/30 tracking-[0.2em] font-mono"
         >
           {{ city }}
         </p>

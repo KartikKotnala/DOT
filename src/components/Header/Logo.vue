@@ -1,8 +1,8 @@
 <template>
   <div class="w-full max-w-[300px]">
     <div
-      class="bg-[#111111]
-             border border-[#222222]
+      class="bg-panel
+             border border-line
              rounded-3xl
              h-[140px]
              px-6
@@ -12,17 +12,16 @@
              justify-between
              transition-all
              duration-300
-             hover:border-white/20
+             hover:brightness-110
              group"
     >
-      <!-- Top Row -->
       <div class="flex justify-between items-center">
 
         <span
           class="text-[9px]
                  uppercase
                  tracking-[0.35em]
-                 text-white/30
+                 text-muted/40
                  font-mono"
         >
           SYSTEM.LOGO
@@ -38,9 +37,9 @@
             class="text-[9px]
                    uppercase
                    tracking-[0.30em]
-                   text-white/25
+                   text-muted/40
                    font-mono"
-          >
+        >
             ACTIVE
           </span>
 
@@ -48,7 +47,6 @@
 
       </div>
 
-      <!-- Logo -->
       <div class="flex-1 flex items-center justify-center overflow-hidden">
 
         <img

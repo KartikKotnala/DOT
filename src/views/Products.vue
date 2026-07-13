@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-transparent text-white px-4 md:px-8 pb-6 relative">
+  <div class="min-h-screen bg-app text-main px-4 md:px-8 pb-6 relative">
     <div class="ambient-glow"></div>
 
     
-    <div class="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md pt-6 pb-5 -mx-4 px-4 md:-mx-8 md:px-8 border-b border-white/5 space-y-5">
+    <div class="sticky top-0 z-50 bg-panel backdrop-blur-md pt-6 pb-5 -mx-4 px-4 md:-mx-8 md:px-8 border-b border-line space-y-5">
       <Header class="header-card" />
       
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -23,17 +23,17 @@
         v-for="item in brands" 
         :key="item.id" 
         @click="goToSubBrand(item.id)"
-        class="hero-card h-130 bg-zinc-900/50 p-7 rounded-2xl border border-white/10 flex flex-col justify-between
-        transition-all duration-300 ease-out cursor-pointer
-        hover:-translate-y-2 hover:border-red-500/40 hover:shadow-[0_10px_30px_rgba(239,68,68,0.1)]
-        group"
+        class="hero-card h-130 bg-panel p-7 rounded-[2rem] border border-line flex flex-col justify-between
+        transition-all duration-500 ease-out cursor-pointer relative overflow-hidden
+        hover:-translate-y-3 hover:border-red-500/50 hover:shadow-[0_20px_40px_-10px_rgba(239,68,68,0.25)]
+        hover:bg-gradient-to-b hover:from-panel hover:to-red-500/5 group"
       >
         <div>
           <div class="w-full h-80 mb-4">
             <BrandSlider :images="item.picture" :brandName="item.name" />
           </div>
-          <h3 class="text-2xl font-bold mb-2 text-white">{{ item.name }}</h3>
-          <p class="text-zinc-400 text-sm mb-4 leading-relaxed">{{ item.description }}</p>
+          <h3 class="text-2xl font-bold mb-2 text-main">{{ item.name }}</h3>
+          <p class="text-muted text-sm mb-4 leading-relaxed">{{ item.description }}</p>
         </div>
       </div>
 

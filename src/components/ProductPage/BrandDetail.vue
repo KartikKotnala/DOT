@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-screen bg-transparent text-white px-4 md:px-8 pb-6 relative">
+  <div class="min-h-screen bg-app text-main px-4 md:px-8 pb-6 relative">
 
     <div class="ambient-glow"></div>
 
     <!-- Header -->
     <div
-      class="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md
-      pt-6 pb-5 -mx-4 px-4 md:-mx-8 md:px-8 border-b border-white/10"
+      class="sticky top-0 z-50 bg-panel backdrop-blur-md
+      pt-6 pb-5 -mx-4 px-4 md:-mx-8 md:px-8 border-b border-line"
     >
       <Header class="header-card" />
 
@@ -30,7 +30,7 @@
         <h1 v-if="currentProduct" class="text-3xl font-bold mt-2">
           {{ currentProduct.name }}
         </h1>
-        <p v-if="currentProduct" class="text-zinc-400 mt-2 max-w-2xl">
+        <p v-if="currentProduct" class="text-muted mt-2 max-w-2xl">
           {{ currentProduct.description }}
         </p>
       </div>
@@ -52,9 +52,9 @@
           opacity-0
           w-full
           cursor-pointer
-          bg-zinc-900/40
+          bg-panel
           border
-          border-white/10
+          border-line
           rounded-2xl
           overflow-hidden
           transition-all
@@ -64,24 +64,23 @@
           flex flex-col shadow-xl shadow-black/30"
           style="height: 430px;"
         >
-          <!-- 🌟 FIXED: Dropped image box to 300px height for an expansive presentation -->
           <div 
-            class="w-full overflow-hidden shrink-0 bg-zinc-950/30 relative" 
+            class="w-full overflow-hidden shrink-0 relative" 
             style="height: 300px; min-height: 300px; max-height: 300px;"
           >
             <img
               :src="getImageUrl(brand.image)"
               :alt="brand.name"
-              class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+              class="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105"
             >
           </div>
 
           <!-- Description Text Layout Block -->
           <div class="p-4 flex-grow flex flex-col justify-start min-w-0">
-            <h2 class="text-base font-bold text-white truncate w-full tracking-tight">
+            <h2 class="text-base font-bold text-main truncate w-full tracking-tight">
               {{ brand.name }}
             </h2>
-            <p class="text-zinc-400 text-xs mt-1.5 line-clamp-2 leading-relaxed">
+            <p class="text-muted text-xs mt-1.5 line-clamp-2 leading-relaxed">
               {{ brand.description || 'Explore premium devices from this brand.' }}
             </p>
           </div>
@@ -92,7 +91,7 @@
     <!-- Empty Array Fallback -->
     <div
       v-if="filteredBrands.length === 0"
-      class="text-center py-24 text-zinc-500"
+      class="text-center py-24 text-muted/60"
     >
       No Brands Found
     </div>
@@ -165,19 +164,13 @@ const currentProduct = computed(() => {
 });
 
 const filteredBrands = computed(() => {
-  let list = brandList.value.filter(
+  return brandList.value.filter(
     (brand) => String(brand.ProductsNamesid) === String(route.params.id)
   );
-
-  if (searchQuery?.value) {
-    const term = searchQuery.value.toLowerCase().trim();
-    list = list.filter((brand) => brand.name.toLowerCase().includes(term));
-  }
-  return list;
 });
 
 const openBrand = (brandId) => {
-  router.push(`/brand/${brandId}`);
+  router.push(`/phone/${brandId}/directions`);
 };
 
 const getImageUrl = (imageName) => {

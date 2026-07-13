@@ -5,8 +5,8 @@
 
     :class="
       active
-        ? 'bg-white text-black'
-        : 'text-white/50 hover:text-white hover:bg-white/5'
+        ? 'bg-white text-main'
+        : 'text-main/50 hover:text-main hover:bg-white/5'
     "
   >
     {{ title }}

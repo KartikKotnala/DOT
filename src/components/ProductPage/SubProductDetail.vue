@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-screen bg-transparent text-white px-4 md:px-8 pb-6 relative">
+  <div class="min-h-screen bg-app text-main px-4 md:px-8 pb-6 relative">
 
     <div class="ambient-glow"></div>
 
     <!-- Header -->
     <div
-      class="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md
-      pt-6 pb-5 -mx-4 px-4 md:-mx-8 md:px-8 border-b border-white/10"
+      class="sticky top-0 z-50 bg-panel backdrop-blur-md
+      pt-6 pb-5 -mx-4 px-4 md:-mx-8 md:px-8 border-b border-line"
     >
       <Header class="header-card" />
 
@@ -31,7 +31,7 @@
         <h1 v-if="currentBrand" class="text-3xl font-bold mt-2">
           {{ currentBrand.name }} 
         </h1>
-        <p class="text-zinc-400 mt-2 max-w-2xl text-sm">
+        <p class="text-muted mt-2 max-w-2xl text-sm">
           Select a specific product to see its location on the mall map.
         </p>
       </div>
@@ -45,7 +45,7 @@
         v-for="product in filteredProducts"
         :key="product.id"
         @click="openProduct(product.id)"
-        class="product-card w-full cursor-pointer bg-zinc-900/50 border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 hover:border-red-500/40 hover:-translate-y-1 flex flex-col"
+        class="product-card w-full cursor-pointer bg-panel border border-line rounded-2xl overflow-hidden transition-all duration-300 hover:border-red-500/40 hover:-translate-y-1 flex flex-col"
         style="height: 380px;"
       >
         <!-- Item Graphic Blueprint Frame Container -->
@@ -62,7 +62,7 @@
 
         <!-- Meta Text Details Panel Description Content -->
         <div class="p-4 flex-grow flex flex-col justify-start overflow-hidden">
-          <h2 class="text-base font-bold text-white truncate w-full">
+          <h2 class="text-base font-bold text-main truncate w-full">
             {{ product.name }}
           </h2>
 
@@ -70,7 +70,7 @@
             ₹{{ Number(product.price).toLocaleString('en-IN') }}
           </p>
           
-          <p class="text-zinc-400 text-xs mt-2 line-clamp-3 leading-relaxed">
+          <p class="text-muted text-xs mt-2 line-clamp-3 leading-relaxed">
             {{ product.description || 'Premium smartphone device.' }}
           </p>
         </div>
@@ -80,7 +80,7 @@
     <!-- Empty Array Fallback Display Indicator -->
     <div
       v-if="filteredProducts.length === 0"
-      class="text-center py-24 text-zinc-500 text-sm"
+      class="text-center py-24 text-muted/60 text-sm"
     >
       No Products Found
     </div>
@@ -121,10 +121,21 @@ onMounted(async () => {
     brandList.value = await brandsResponse.json();
     subProductList.value = await subProductsResponse.json();
 
-    // 2. Wait for Vue to fully complete layout updates for newly pushed loops
+    // 🌟 2. AUTOMATIC ROUTING CHECK
+    // If there are no products, OR the only product found matches the brand ID,
+    // skip the grid completely and go straight to the map directions.
+    if (
+      filteredProducts.value.length === 0 || 
+      (filteredProducts.value.length === 1 && filteredProducts.value[0].id === route.params.id)
+    ) {
+      openProduct(route.params.id);
+      return; // Stop right here so the code below doesn't run!
+    }
+
+    // 3. Wait for Vue to fully complete layout updates for newly pushed loops
     await nextTick();
 
-    // 3. 🌟 FIXED: Swapped to an explicit fromTo timeline mapping
+    // 4. Run explicit fromTo timeline mapping for sub-products
     if (filteredProducts.value.length > 0) {
       gsap.fromTo(".product-card", 
         { 
@@ -138,7 +149,7 @@ onMounted(async () => {
           scale: 1,
           stagger: 0.08, 
           duration: 0.5, 
-          clearProps: "all" // 🌟 Crucial: Strips out ALL inline opacity filters when done!
+          clearProps: "all" 
         }
       );
     }
