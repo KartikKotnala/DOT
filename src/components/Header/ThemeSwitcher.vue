@@ -6,24 +6,24 @@
   <div
     @click="cycleTheme"
     class="glass-panel rounded-3xl p-6 h-[140px] flex flex-col justify-between transition-all duration-300 hover:scale-[1.02] cursor-pointer select-none group"
-    :style="{ borderColor: 'var(--border-color)' }"
+    :style="{ borderColor: 'var(--color-line)' }"
   >
     <!-- Header -->
     <div class="flex justify-between items-center">
       <span
         class="text-[10px] uppercase tracking-[0.3em] font-mono"
-        :style="{ color: 'var(--text-muted)' }"
+        :style="{ color: 'var(--color-muted)' }"
       >
         THEME.SYS
       </span>
 
-      <!-- Icon shifts dynamically based on theme and uses your active --accent color glow! -->
+      <!-- Icon shifts dynamically based on theme and uses your active --color-accent color glow! -->
       <component 
         :is="currentIcon" 
         class="w-5 h-5 transition-transform duration-500 group-hover:rotate-45"
         :style="{ 
-          color: 'var(--accent)', 
-          filter: 'drop-shadow(0 0 8px var(--accent))' 
+          color: 'var(--color-accent)', 
+          filter: 'drop-shadow(0 0 8px var(--color-accent))' 
         }" 
       />
     </div>
@@ -32,19 +32,19 @@
     <div>
       <h2 
         class="text-xl font-dot tracking-widest uppercase truncate"
-        :style="{ color: 'var(--text-main)' }"
+        :style="{ color: 'var(--color-main)' }"
       >
         {{ themeNames[activeTheme] }}
       </h2>
 
       <div class="flex justify-between items-end mt-2">
-        <p class="text-[10px] uppercase tracking-wider" :style="{ color: 'var(--text-muted)' }">
+        <p class="text-[10px] uppercase tracking-wider" :style="{ color: 'var(--color-muted)' }">
           Click to Shift
         </p>
 
         <p
           class="text-[10px] uppercase tracking-[0.2em] font-mono"
-          :style="{ color: 'var(--text-muted)' }"
+          :style="{ color: 'var(--color-muted)' }"
         >
           SYS_v4.0
         </p>

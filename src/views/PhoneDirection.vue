@@ -24,27 +24,44 @@
             />
           </div>
           <div class="min-w-0">
-            <span class="text-[9px] uppercase tracking-widest text-red-400 font-mono font-bold block mb-0.5">Device Specifications Matrix</span>
+            <span class="text-[9px] uppercase tracking-widest text-red-400 font-mono font-bold block mb-0.5">
+              {{ selectedDeviceDetails.storage ? 'Device Specifications Matrix' : 'Outlet Directory Context' }}
+            </span>
             <h2 class="text-lg font-extrabold text-main truncate leading-tight">{{ selectedDeviceDetails.name }}</h2>
             <p class="text-xs text-muted font-medium mt-0.5">Floor Display Location: Lvl {{ selectedDeviceDetails.floor }}</p>
           </div>
         </div>
 
         <div class="flex flex-col gap-3 font-mono text-xs">
-          <div class="flex justify-between items-center py-2 border-b border-line/40">
-            <span class="text-muted">Storage Capacity:</span>
-            <span class="text-main font-bold">{{ selectedDeviceDetails.storage || '256 GB NVMe' }}</span>
-          </div>
-          <div class="flex justify-between items-center py-2 border-b border-line/40">
-            <span class="text-muted">Memory RAM Layout:</span>
-            <span class="text-main font-bold">{{ selectedDeviceDetails.ram || '8 GB ' }}</span>
-          </div>
+          <template v-if="selectedDeviceDetails.storage || selectedDeviceDetails.ram">
+            <div class="flex justify-between items-center py-2 border-b border-line/40">
+              <span class="text-muted">Storage Capacity:</span>
+              <span class="text-main font-bold">{{ selectedDeviceDetails.storage }}</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-line/40">
+              <span class="text-muted">Memory RAM Layout:</span>
+              <span class="text-main font-bold">{{ selectedDeviceDetails.ram }}</span>
+            </div>
+          </template>
+
+          <template v-else>
+            <div class="flex flex-col gap-1.5 py-1 border-b border-line/40 pb-3">
+              <span class="text-[10px] text-muted uppercase tracking-wider font-bold">About Brand:</span>
+              <p class="text-main/80 font-sans leading-relaxed text-xs font-normal">
+                {{ selectedDeviceDetails.description || 'Welcome to our premium retail walk-in outlet location.' }}
+              </p>
+            </div>
+            <div v-if="selectedDeviceDetails.price" class="flex justify-between items-center py-2 border-b border-line/40">
+              <span class="text-muted">Standard Pricing Base:</span>
+              <span class="text-emerald-400 font-bold">₹{{ selectedDeviceDetails.price }}</span>
+            </div>
+          </template>
         </div>
 
         <div class="mt-2 flex gap-3">
           <button 
             @click="confirmAndShowRoute"
-            class="flex-1 py-3 bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 shadow-md transform active:scale-[0.99]"
+            class="w-full py-3 bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 shadow-md transform active:scale-[0.99]"
           >
             Lock Waypoint Route
           </button>
@@ -67,7 +84,6 @@
     </div>
 
     <div v-if="location" class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[85vh]">
-      
       <div class="lg:col-span-3 bg-panel border border-line rounded-2xl p-4 flex flex-col gap-2 overflow-y-auto custom-scrollbar h-full">
         
         <div class="mb-4">
@@ -123,7 +139,6 @@
         <div v-if="filteredSidebarItems.length === 0" class="text-xs text-muted/60 text-center py-6">
           Direct walk-in store location.
         </div>
-
       </div>
 
       <div class="lg:col-span-9 bg-white border border-line rounded-2xl p-2 flex flex-col relative overflow-hidden shadow-xl h-full">
@@ -143,13 +158,28 @@
 
         <div 
           v-if="customNodes.length > 0"
-          class="absolute top-4 right-4 z-50 flex items-center gap-3 bg-panel border border-line rounded-xl p-2 pl-3 shadow-xl animate-fade-in font-mono text-xs"
+          class="absolute top-4 right-4 z-50 flex flex-col gap-2 bg-panel border border-line rounded-xl p-3 shadow-xl animate-fade-in font-mono text-xs max-w-sm w-80"
         >
-          <div class="flex items-center gap-1.5 text-muted">
-            <span class="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
-            Custom Waypoints: <span class="text-main font-bold">{{ customNodes.length }}</span>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5 text-muted">
+              <span class="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
+              Waypoints: <span class="text-main font-bold">{{ customNodes.length }}</span>
+            </div>
+            <button @click="clearCustomRoute" class="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 font-bold rounded hover:bg-red-500/20 transition-all text-[10px]">Reset</button>
           </div>
-          <button @click="clearCustomRoute" class="px-2.5 py-1 bg-red-500/20 border border-red-500/30 text-red-400 font-bold rounded-lg hover:bg-red-500/30 transition-all duration-150">Reset Path</button>
+
+          <div class="bg-black/40 border border-line/60 rounded-lg p-2 flex flex-col gap-1.5">
+            <span class="text-[9px] text-muted uppercase tracking-wider">Generated JSON Path:</span>
+            <code class="text-[11px] text-emerald-400 break-all select-all font-mono leading-tight bg-white/5 p-1.5 rounded block max-h-16 overflow-y-auto">
+              {{ customPathString }}
+            </code>
+            <button 
+              @click="copyPathToClipboard" 
+              class="w-full py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded text-[10px] uppercase tracking-wide transition-colors cursor-pointer"
+            >
+              {{ copiedStatus ? '✓ Copied!' : 'Copy Path String' }}
+            </button>
+          </div>
         </div>
 
         <div 
@@ -199,6 +229,7 @@
                   <path :d="customPathString" fill="none" stroke="#10b981" stroke-width="5" stroke-dasharray="8,8" stroke-linecap="round" stroke-linejoin="round" class="animate-custom-flow" />
                   <g v-for="(node, index) in customNodes" :key="index" :transform="`translate(${node.x}, ${node.y})`">
                     <circle cx="0" cy="0" r="5" fill="#10b981" stroke="#ffffff" stroke-width="1.5" />
+                    <text cx="0" cy="-10" fill="#047857" font-size="9" font-weight="bold" font-family="mono" text-anchor="middle">{{node.x}},{{node.y}}</text>
                   </g>
                 </g>
               </svg>
@@ -248,6 +279,7 @@ const activeFloor = ref(1);
 const mapSvgRef = ref(null);
 const customNodes = ref([]);
 const hasDraggedMoved = ref(false);
+const copiedStatus = ref(false);
 
 const isModalOpen = ref(false);
 const selectedDeviceDetails = ref(null);
@@ -289,6 +321,17 @@ const customPathString = computed(() => {
     return index === 0 ? `M ${node.x} ${node.y}` : `${path} L ${node.x} ${node.y}`;
   }, '');
 });
+
+const copyPathToClipboard = async () => {
+  if (!customPathString.value) return;
+  try {
+    await navigator.clipboard.writeText(customPathString.value);
+    copiedStatus.value = true;
+    setTimeout(() => { copiedStatus.value = false; }, 2000);
+  } catch (err) {
+    console.error("Clipboard routing failed:", err);
+  }
+};
 
 const clearCustomRoute = () => { customNodes.value = []; };
 
@@ -354,7 +397,7 @@ const onZoom = (event) => {
 const uiZoom = (factor) => { zoomScale.value = Math.min(Math.max(0.4, zoomScale.value + factor), 3.5); };
 const handleMapMouseDown = (event) => { isDragging.value = true; hasDraggedMoved.value = false; startMouseX.value = event.clientX - panX.value; startMouseY.value = event.clientY - panY.value; };
 const onPan = (event) => { if (!isDragging.value) return; if (Math.abs(event.clientX - (startMouseX.value + panX.value)) > 5 || Math.abs(event.clientY - (startMouseY.value + panY.value)) > 5) { hasDraggedMoved.value = true; } panX.value = event.clientX - startMouseX.value; panY.value = event.clientY - startMouseY.value; };
-const endPan = (event) => { if (isDragging.value) { if (!hasDraggedMoved.value && mapSvgRef.value) { const rect = mapSvgRef.value.getBoundingClientRect(); const clickX = event.clientX - rect.left; const clickY = event.clientY - rect.top; customNodes.value.push({ x: Math.round((clickX / rect.width) * 800), y: Math.round((clickY / rect.height) * 600) }); } isDragging.value = false; } };
+const endPan = (event) => { if (isDragging.value) { /*if (!hasDraggedMoved.value && mapSvgRef.value) { const rect = mapSvgRef.value.getBoundingClientRect(); const clickX = event.clientX - rect.left; const clickY = event.clientY - rect.top; customNodes.value.push({ x: Math.round((clickX / rect.width) * 800), y: Math.round((clickY / rect.height) * 600) }); }*/ isDragging.value = false; } };
 const resetMap = () => { zoomScale.value = 1.0; panX.value = 0; panY.value = 0; };
 
 onMounted(async () => {
@@ -382,19 +425,3 @@ const getLocationImageUrl = (imageName) => {
   try { return new URL(`../assets/images/${imageName}`, import.meta.url).href; } catch { return ""; }
 };
 </script>
-
-<style scoped>
-@keyframes routeMove { to { stroke-dashoffset: -24; } }
-.animate-route-flow { animation: routeMove 1s linear infinite; }
-
-@keyframes customMove { to { stroke-dashoffset: -16; } }
-.animate-custom-flow { animation: customMove 0.8s linear infinite; }
-
-@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-.animate-fade-in { animation: fadeIn 0.18s cubic-bezier(0.215, 0.610, 0.355, 1) forwards; }
-
-.custom-scrollbar::-webkit-scrollbar { width: 5px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.01); border-radius: 10px; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 10px; }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.18); }
-</style>

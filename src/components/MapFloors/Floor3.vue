@@ -140,7 +140,7 @@
     <!-- ========================================================= -->
     <!-- Dedicated Restrooms/Infodesk block sandwiched beneath escalator arrivals -->
     <rect x="340" y="500" width="120" height="55" fill="#f8fafc" stroke="#64748b" stroke-width="3" />
-    <text x="400" y="533" fill="#475569" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle">CENTRAL RESTROOMS</text>
+    <text x="400" y="533" fill="#475569" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle">Entry Level 3</text>
 
     <!-- Decorative structural columns giving the sky deck depth -->
     <g fill="#cbd5e1" stroke="#94a3b8" stroke-width="1">

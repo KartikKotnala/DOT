@@ -115,7 +115,7 @@
     <g fill="#78350f" font-size="10" font-weight="bold" font-family="sans-serif" text-anchor="middle">
       <text x="265" y="510">THE BAKERY CRUST 212</text>
       <text x="535" y="510">SWEET TREATS 213</text>
-      <text x="400" y="530" fill="#475569" font-size="9">RESTROOMS / INFODESK</text>
+      <text x="400" y="530" fill="#475569" font-size="15">Entry</text>
     </g>
 
     <!-- ========================================================= -->

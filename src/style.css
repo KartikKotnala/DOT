@@ -1,85 +1,85 @@
 @import "tailwindcss";
 
 @theme {
-  /* 🌟 FIXED: Tailwind v4 proper font family structure declaration line mapping */
   --font-sans: "Outfit", system-ui, -apple-system, sans-serif;
   
-  --color-app: var(--bg-app);
-  --color-panel: var(--panel-bg);
-  --color-main: var(--text-main);
-  --color-muted: var(--text-muted);
-  --color-line: var(--border-color);
-  --color-accent: var(--accent);
+  --color-app: #000000;
+  --color-panel-glow: rgba(239, 68, 68, 0.15); 
+  --color-accent: #ef4444;              
+  --color-panel: rgba(15, 15, 15, 0.6);
+  --color-line: rgba(255, 255, 255, 0.15);
+  --color-main: #ffffff;
+  --color-muted: #a1a1aa;
 }
 
-:root, [data-theme="dark"] {
-  --bg-app: #000000;          
-  --panel-glow: rgba(239, 68, 68, 0.15); 
-  --accent: #ef4444;              
-  --panel-bg: rgba(15, 15, 15, 0.6);
-  --border-color: rgba(255, 255, 255, 0.15);
-  --text-main: #ffffff;
-  --text-muted: #a1a1aa; /* zinc-400 */
+[data-theme="dark"] {
+  --color-app: #000000;          
+  --color-panel-glow: rgba(239, 68, 68, 0.15); 
+  --color-accent: #ef4444;              
+  --color-panel: rgba(15, 15, 15, 0.6);
+  --color-line: rgba(255, 255, 255, 0.15);
+  --color-main: #ffffff;
+  --color-muted: #a1a1aa; /* zinc-400 */
 }
 
 [data-theme="green"] {
-  --bg-app: #021a14;              
-  --panel-glow: rgba(16, 185, 129, 0.2);
-  --accent: #10b981;              
-  --panel-bg: rgba(6, 31, 26, 0.6);
-  --border-color: rgba(16, 185, 129, 0.25);
-  --text-main: #f0fdf4;
-  --text-muted: #6ee7b7;
+  --color-app: #021a14;              
+  --color-panel-glow: rgba(16, 185, 129, 0.2);
+  --color-accent: #10b981;              
+  --color-panel: rgba(6, 31, 26, 0.6);
+  --color-line: rgba(16, 185, 129, 0.25);
+  --color-main: #f0fdf4;
+  --color-muted: #6ee7b7;
 }
 
 [data-theme="blue"] {
-  --bg-app: #020617;              
-  --panel-glow: rgba(59, 130, 246, 0.2);
-  --accent: #3b82f6;              
-  --panel-bg: rgba(15, 23, 42, 0.6);
-  --border-color: rgba(59, 130, 246, 0.25);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  --color-app: #020617;              
+  --color-panel-glow: rgba(59, 130, 246, 0.2);
+  --color-accent: #3b82f6;              
+  --color-panel: rgba(15, 23, 42, 0.6);
+  --color-line: rgba(59, 130, 246, 0.25);
+  --color-main: #f8fafc;
+  --color-muted: #94a3b8;
 }
 
 [data-theme="orange"] {
-  --bg-app: #0c0600;              
-  --panel-glow: rgba(249, 115, 22, 0.2); 
-  --accent: #f97316;             
-  --panel-bg: rgba(25, 14, 5, 0.6);    
-  --border-color: rgba(249, 115, 22, 0.25); 
-  --text-main: #fff7ed;        
-  --text-muted: rgba(249, 115, 22, 0.5);
+  --color-app: #0c0600;              
+  --color-panel-glow: rgba(249, 115, 22, 0.2); 
+  --color-accent: #f97316;             
+  --color-panel: rgba(25, 14, 5, 0.6);    
+  --color-line: rgba(249, 115, 22, 0.25); 
+  --color-main: #fff7ed;        
+  --color-muted: rgba(249, 115, 22, 0.5);
 }
 
 [data-theme="light"] {
-  --bg-app: #f4f4f5;              
-  --panel-glow: rgba(24, 24, 27, 0.04);
-  --accent: #18181b;              
-  --panel-bg: rgba(255, 255, 255, 0.8);
-  --border-color: rgba(24, 24, 27, 0.1);
-  --text-main: #000000;
-  --text-muted: #3f3f46;
+  --color-app: #f4f4f5;              
+  --color-panel-glow: rgba(24, 24, 27, 0.04);
+  --color-accent: #18181b;              
+  --color-panel: rgba(255, 255, 255, 0.8);
+  --color-line: rgba(24, 24, 27, 0.1);
+  --color-main: #000000;
+  --color-muted: #3f3f46;
 }
 
 [data-theme="light-green"] {
-  --bg-app: #ecfdf5;
-  --panel-glow: rgba(16, 185, 129, 0.04);
-  --accent: #10b981;
-  --panel-bg: rgba(255, 255, 255, 0.8);
-  --border-color: rgba(16, 185, 129, 0.2);
-  --text-main: #000000;
-  --text-muted: #065f46;
+  --color-app: #ecfdf5;
+  --color-panel-glow: rgba(16, 185, 129, 0.04);
+  --color-accent: #10b981;
+  --color-panel: rgba(255, 255, 255, 0.8);
+  --color-line: rgba(16, 185, 129, 0.2);
+  --color-main: #000000;
+  --color-muted: #065f46;
 }
 
 [data-theme="light-blue"] {
-  --bg-app: #eff6ff;
-  --panel-glow: rgba(59, 130, 246, 0.04);
-  --accent: #3b82f6;
-  --panel-bg: rgba(255, 255, 255, 0.8);
-  --border-color: rgba(59, 130, 246, 0.2);
-  --text-main: #000000;
-  --text-muted: #1e3a8a;
+  --color-app: #eff6ff;
+  --color-panel-glow: rgba(59, 130, 246, 0.04);
+  --color-accent: #3b82f6;
+  --color-panel: rgba(255, 255, 255, 0.8);
+  --color-line: rgba(59, 130, 246, 0.2);
+  --color-main: #000000;
+  --color-muted: #1e3a8a;
 }
 
 /* 🌟 ENFORCED CORE BASELINE STYLES: This forces EVERYTHING to stay locked in */
@@ -88,8 +88,8 @@ body, input, select, textarea, button {
 }
 
 body {
-  background-color: var(--bg-app); 
-  color: var(--text-main);
+  background-color: var(--color-app); 
+  color: var(--color-main);
   overflow-x: hidden;
   transition: background-color 0.4s ease, color 0.3s ease;
 }
@@ -105,7 +105,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+  background-image: radial-gradient(var(--color-line) 1px, transparent 1px);
   background-size: 20px 20px;
   z-index: -1;
   pointer-events: none;
@@ -114,18 +114,18 @@ body {
 }
 
 .glass-panel {
-  background: var(--panel-bg);
+  background: var(--color-panel);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-line);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
 }
 
 .glass-panel:hover {
   background: rgba(255, 255, 255, 0.06);
-  border-color: var(--accent); 
-  box-shadow: 0 10px 30px var(--panel-glow);
+  border-color: var(--color-accent); 
+  box-shadow: 0 10px 30px var(--color-panel-glow);
 }
 
 @keyframes ken-burns {
@@ -135,4 +135,12 @@ body {
 
 .animate-ken-burns {
   animation: ken-burns 4.5s ease-out forwards;
+}
+
+/* Force the entire app to use Outfit */
+html,
+body,
+#app,
+#app * {
+  font-family: var(--font-sans) !important;
 }

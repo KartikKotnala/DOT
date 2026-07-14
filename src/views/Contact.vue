@@ -347,7 +347,7 @@ onMounted(async () => {
 <style scoped>
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 10px; }
 
 @keyframes fadeIn { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
 .animate-fade-in { animation: fadeIn 0.15s cubic-bezier(0.215, 0.610, 0.355, 1) forwards; }

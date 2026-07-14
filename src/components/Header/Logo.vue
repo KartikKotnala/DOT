@@ -52,6 +52,7 @@
         <img
           :src="logo"
           alt="DOT Logo"
+          :style="appTheme && appTheme.includes('light') ? 'filter: invert(1);' : ''"
           class="h-20
                  w-auto
                  object-contain
@@ -67,5 +68,8 @@
 </template>
 
 <script setup>
+import { inject } from "vue";
 import logo from "@/assets/images/malllogo.png";
+
+const appTheme = inject("appTheme");
 </script>

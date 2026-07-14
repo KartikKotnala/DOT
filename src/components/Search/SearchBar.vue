@@ -11,9 +11,9 @@
         @keydown.enter.prevent="selectHighlighted"
         @keydown.esc="clearSearch"
         type="text"
-        placeholder="Search Products..."
+        placeholder="Search brands, products, or food..."
         class="w-full glass-panel rounded-full py-3 pl-5 pr-24 text-sm placeholder:text-main/30 outline-none transition-all duration-300 focus:border-white"
-        :style="{ color: 'var(--text-main)' }"
+        :style="{ color: 'var(--color-main)' }"
       />
 
       <div class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
@@ -35,7 +35,7 @@
     <div 
       v-if="showKeyboard"
       class="absolute top-[115%] left-0 w-full glass-panel rounded-2xl p-4 shadow-2xl flex flex-col gap-1.5 font-mono z-[999999]"
-      style="background: var(--panel-bg); border-color: var(--border-color); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);"
+      style="background: var(--color-panel); border-color: var(--color-line); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);"
       @mousedown.prevent
     >
       <div v-for="(row, rIdx) in keyboardRows" :key="rIdx" class="flex justify-center gap-1 w-full">
@@ -61,9 +61,9 @@
         v-if="isFocused && suggestions.length > 0"
         class="fixed rounded-2xl overflow-hidden shadow-2xl max-h-60 overflow-y-auto backdrop-blur-md border"
         :style="{ 
-          backgroundColor: 'var(--panel-bg)', 
-          borderColor: 'var(--border-color)',
-          boxShadow: '0 20px 40px var(--panel-glow)',
+          backgroundColor: 'var(--color-panel)', 
+          borderColor: 'var(--color-line)',
+          boxShadow: '0 20px 40px var(--color-panel-glow)',
           top: dropdownStyles.top,
           left: dropdownStyles.left,
           width: dropdownStyles.width,
@@ -78,22 +78,21 @@
             @mouseover="highlightedIndex = index"
             class="px-5 py-3 cursor-pointer transition-colors flex items-center justify-between text-sm border-b last:border-0"
             :class="index === highlightedIndex ? 'bg-white/10' : 'hover:bg-white/5'"
-            :style="{ borderColor: 'var(--border-color)' }"
+            :style="{ borderColor: 'var(--color-line)' }"
           >
-            <span class="font-medium" :style="{ color: 'var(--text-main)' }">
+            <span class="font-medium" :style="{ color: 'var(--color-main)' }">
               {{ item.name }}
             </span>
             
             <span 
-              class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded border flex items-center gap-1.5"
+              class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded border"
               :style="{
                 backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                color: index === highlightedIndex ? 'var(--text-main)' : 'var(--accent)',
-                borderColor: 'var(--border-color)'
+                color: index === highlightedIndex ? 'var(--color-main)' : 'var(--color-accent)',
+                borderColor: 'var(--color-line)'
               }"
             >
-              <span>{{ item.type === 'category' ? '📁' : item.type === 'brand' ? '🏷️' : '📱' }}</span>
-              <span>{{ item.type }}</span>
+              {{ item.type }}
             </span>
           </li>
         </ul>
@@ -128,11 +127,9 @@ const keyboardRows = [
   ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Space', 'Clear']
 ];
 
-// Re-calculated positions *only* for the dropdown suggestion box tracking layer
 const updateDropdownPosition = () => {
   if (inputRef.value) {
     const rect = inputRef.value.getBoundingClientRect();
-    // Offset suggestion box down if virtual keyboard is active (~175px tall)
     const suggestionsOffset = showKeyboard.value ? rect.bottom + 175 : rect.bottom;
     dropdownStyles.value = {
       top: `${suggestionsOffset + window.scrollY + 8}px`,
@@ -229,6 +226,7 @@ const suggestions = computed(() => {
 
   const results = [];
 
+  // 1. Category Matching
   if (Array.isArray(categoryList.value)) {
     categoryList.value.forEach(cat => {
       if (!cat || !cat.name) return;
@@ -238,6 +236,7 @@ const suggestions = computed(() => {
     });
   }
 
+  // 2. Brand Matching
   if (Array.isArray(brandList.value)) {
     brandList.value.forEach(brand => {
       if (!brand || !brand.name) return;
@@ -247,18 +246,35 @@ const suggestions = computed(() => {
     });
   }
 
+  // 3. Products Filter Switch Core
   if (Array.isArray(deviceList.value)) {
     deviceList.value.forEach(device => {
       if (!device || !device.name) return;
+      
       const matchedBrand = brandList.value?.find(b => String(b.id) === String(device.brandId));
       const associatedBrandName = matchedBrand?.name?.toLowerCase() || '';
+      const dName = device.name.toLowerCase();
 
       const isMatch = queryWords.every(word => 
         device.name.toLowerCase().includes(word) || associatedBrandName.includes(word)
       );
 
       if (isMatch) {
-        results.push({ uniqueId: `device-${device.id}`, id: device.id, name: device.name, type: 'device' });
+        let computedType = 'store'; // Uniform global structural fallback
+
+        if (dName.includes('iphone') || dName.includes('galaxy') || dName.includes('oneplus') || dName.includes('nothing phone')) {
+          computedType = 'device';
+        } 
+        else if (dName.includes('mcdonald') || dName.includes('kfc') || dName.includes('pizza') || dName.includes('domino') || dName.includes('wok') || dName.includes('bakery') || dName.includes('sweet treats')) {
+          computedType = 'food';
+        }
+
+        results.push({ 
+          uniqueId: `device-${device.id}`, 
+          id: device.id, 
+          name: device.name, 
+          type: computedType 
+        });
       }
     });
   }
@@ -289,5 +305,5 @@ const handleBlur = () => {
 <style scoped>
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 10px; }
 </style>

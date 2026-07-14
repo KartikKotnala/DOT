@@ -21,9 +21,9 @@
     "image": "iphone_14.jpg",
     "description": "Super-sized display and incredibly long battery life.",
     "floor": 1,
-    "mapX": 510,
-    "mapY": 285,
-    "path": "M 400 550 L 400 295 L 510 295"
+    "mapX": 520,
+    "mapY": 295,
+    "path": "M 400 550 L 400 295 L 520 295"
   },
   {
     "id": "p3",
@@ -47,9 +47,9 @@
     "image": "nothing_3.jpg",
     "description": "Powerfully unique. Stunning performance.",
     "floor": 1,
-    "mapX": 100,
-    "mapY": 200,
-    "path": "M 400 550 L 400 460 L 210 460 L 210 190 L 100 190"
+    "mapX": 110,
+    "mapY": 190,
+    "path": "M 400 550 L 400 460 L 210 460 L 210 190 L 110 190"
   },
   {
     "id": "p5",
@@ -60,9 +60,9 @@
     "image": "Nike2.jpg",
     "description": "Just Do It. Premium athletic footwear, apparel, and sports accessories.",
     "floor": 2,
-    "mapX": 310,
-    "mapY": 120,
-    "path": "M 400 550 L 310 120"
+    "mapX": 677,
+    "mapY": 115,
+    "path": "M 398 500 V 440 H 605 V 173 H 678 V 122"
   },
   {
     "id": "p6",
@@ -73,9 +73,9 @@
     "image": "samsung-1.jpg",
     "description": "Galaxy AI is here. Welcome to the era of mobile AI.",
     "floor": 1,
-    "mapX": 600,
-    "mapY": 295,
-    "path": "M 400 550 L 400 295 L 600 295"
+    "mapX": 110,
+    "mapY": 195,
+    "path": "M 400 550 L 400 460 L 210 460 L 210 195 L 110 195"
   },
   {
     "id": "p7",
@@ -86,9 +86,9 @@
     "image": "oneplus-1.jpg",
     "description": "Smooth Beyond Belief. Experience the new Hasselblad Camera.",
     "floor": 1,
-    "mapX": 500,
-    "mapY": 350,
-    "path": "M 400 550 L 400 350 L 500 350"
+    "mapX": 110,
+    "mapY": 295,
+    "path": "M 400 550 L 400 460 L 210 460 L 210 295 L 110 295"
   },
   {
     "id": "p8",
@@ -99,9 +99,9 @@
     "image": "UCB.jpg",
     "description": "United Colors of Benetton fashion apparel and accessories.",
     "floor": 2,
-    "mapX": 450,
-    "mapY": 200,
-    "path": "M 400 550 L 450 200"
+    "mapX": 115,
+    "mapY": 240,
+    "path": "M 400 504 V 446 H 200 V 243 H 114"
   },
   {
     "id": "p9",
@@ -112,9 +112,9 @@
     "image": "Adidas.jpg",
     "description": "Impossible is Nothing. Premium sports and streetwear.",
     "floor": 2,
-    "mapX": 550,
-    "mapY": 150,
-    "path": "M 400 550 L 550 150"
+    "mapX": 115,
+    "mapY": 380,
+    "path": "M 401 503 V 447 H 199 V 384 H 115"
   },
   {
     "id": "p10",
@@ -125,9 +125,9 @@
     "image": "Puma.jpg",
     "description": "Forever Faster. Shop activewear and lifestyle products.",
     "floor": 3,
-    "mapX": 250,
-    "mapY": 100,
-    "path": "M 400 550 L 250 100"
+    "mapX": 115,
+    "mapY": 250,
+    "path": "M 401 500 V 250 H 115"
   },
   {
     "id": "p11",
@@ -138,9 +138,9 @@
     "image": "Jordan.jpg",
     "description": "Defy the rules. Explore iconic sneakers and apparel.",
     "floor": 3,
-    "mapX": 350,
-    "mapY": 100,
-    "path": "M 400 550 L 350 100"
+    "mapX": 685,
+    "mapY": 250,
+    "path": "M 400 498 V 255 H 684"
   },
   {
     "id": "p12",
@@ -151,9 +151,9 @@
     "image": "Decathalon.jpg",
     "description": "Sport for all. All for sport. Find gear for 70+ sports.",
     "floor": 3,
-    "mapX": 600,
-    "mapY": 400,
-    "path": "M 400 550 L 600 400"
+    "mapX": 685,
+    "mapY": 395,
+    "path": "M 400 503 V 402 H 685"
   },
   {
     "id": "p13",
@@ -164,9 +164,9 @@
     "image": "Tanishq.jpg",
     "description": "A Tata Product. Exquisite gold and diamond jewellery.",
     "floor": 1,
-    "mapX": 150,
-    "mapY": 500,
-    "path": "M 400 550 L 150 500"
+    "mapX": 105,
+    "mapY": 485,
+    "path": "M 400 550 L 400 460 L 210 460 L 210 485 L 105 485"
   },
   {
     "id": "p14",
@@ -177,9 +177,9 @@
     "image": "Bellavita.jpg",
     "description": "Premium luxury perfumes and personal care products.",
     "floor": 1,
-    "mapX": 200,
-    "mapY": 450,
-    "path": "M 400 550 L 200 450"
+    "mapX": 310,
+    "mapY": 115,
+    "path": "M 400 550 L 400 150 L 310 150 L 310 115"
   },
   {
     "id": "p15",
@@ -189,10 +189,10 @@
     "storage": "",
     "image": "appolo.jpg",
     "description": "Your trusted local pharmacy for medicines and healthcare.",
-    "floor": -1,
-    "mapX": 300,
-    "mapY": 600,
-    "path": "M 400 550 L 300 600"
+    "floor": 3,
+    "mapX": 552,
+    "mapY": 510,
+    "path": "M 400 499 L 400 430 L 552 430 L 552 510"
   },
   {
     "id": "p16",
@@ -202,10 +202,10 @@
     "storage": "",
     "image": "kfc.jpg",
     "description": "Finger Lickin' Good. Original recipe fried chicken.",
-    "floor": 1,
-    "mapX": 400,
-    "mapY": 100,
-    "path": "M 400 550 L 400 100"
+    "floor": 3,
+    "mapX": 110,
+    "mapY": 120,
+    "path": "M 400 503 V 254 H 202 V 186 H 110 V 120"
   },
   {
     "id": "p17",
@@ -215,10 +215,10 @@
     "storage": "",
     "image": "mcd.jpg",
     "description": "I'm Lovin' It. Burgers, fries, and happy meals.",
-    "floor": 4,
-    "mapX": 450,
-    "mapY": 100,
-    "path": "M 400 550 L 450 100"
+    "floor": 3,
+    "mapX": 248,
+    "mapY": 122,
+    "path": "M 399 500 V 250 H 282 V 188 H 248 V 122"
   },
   {
     "id": "p18",
@@ -228,10 +228,10 @@
     "storage": "",
     "image": "pizzahut.jpg",
     "description": "Make it great. Delicious pan pizzas and sides.",
-    "floor": 4,
-    "mapX": 500,
-    "mapY": 100,
-    "path": "M 400 550 L 500 100"
+    "floor": 3,
+    "mapX": 692,
+    "mapY": 120,
+    "path": "M 399 503 V 250 H 604 V 187 H 692 V 120"
   },
   {
     "id": "p19",
@@ -241,9 +241,9 @@
     "storage": "",
     "image": "dominos.jpg",
     "description": "Hot and fresh pizza delivered or for dine-in.",
-    "floor": 4,
-    "mapX": 550,
-    "mapY": 100,
-    "path": "M 400 550 L 550 100"
+    "floor": 3,
+    "mapX": 549,
+    "mapY": 123,
+    "path": "M 400 501 V 251 H 586 V 189 H 549 V 123"
   }
 ]

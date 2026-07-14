@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full relative overflow-hidden bg-panel hover:brightness-110 rounded-xl border" :style="{ borderColor: 'var(--border-color)' }">
+  <div class="w-full h-full relative overflow-hidden bg-panel hover:brightness-110 rounded-xl border" :style="{ borderColor: 'var(--color-line)' }">
     
     <TransitionGroup name="slide" v-if="images && images.length > 0">
       <div 
@@ -28,7 +28,7 @@
           'w-1.5 h-1.5 rounded-full transition-all duration-300'
         ]"
         :style="{
-          backgroundColor: idx === activeIndex ? 'var(--accent)' : 'rgba(255, 255, 255, 0.25)',
+          backgroundColor: idx === activeIndex ? 'var(--color-accent)' : 'rgba(255, 255, 255, 0.25)',
           transform: idx === activeIndex ? 'scale(1.2)' : 'scale(1)'
         }"
       ></span>

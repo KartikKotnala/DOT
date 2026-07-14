@@ -38,8 +38,8 @@ provide("appTheme", currentTheme);
 <style>
 /* 🌟 Smoothly transitions background repaints across theme switches */
 .theme-wrapper {
-  background-color: var(--bg-app);
-  color: var(--text-main);
+  background-color: var(--color-app);
+  color: var(--color-main);
   transition: background-color 0.4s ease, color 0.3s ease;
 }
 
