@@ -10,7 +10,7 @@
         
         <button 
           @click="closeDetailsModal" 
-          class="absolute top-4 right-4 text-muted hover:text-main text-sm font-bold font-mono transition-colors"
+          class="absolute top-4 right-4 text-muted hover:text-main text-sm font-bold font-mono transition-colors focus:outline-none"
         >
           ✕
         </button>
@@ -61,7 +61,7 @@
         <div class="mt-2 flex gap-3">
           <button 
             @click="confirmAndShowRoute"
-            class="w-full py-3 bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 shadow-md transform active:scale-[0.99]"
+            class="w-full py-3 bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 shadow-md transform active:scale-[0.99] cursor-pointer focus:outline-none"
           >
             Lock Waypoint Route
           </button>
@@ -74,13 +74,13 @@
       <div>
         <button 
           @click="abortNavigation" 
-          class="inline-flex items-center text-red-400 font-semibold hover:text-red-300 transition-colors text-xs uppercase tracking-wider"
+          class="inline-flex items-center text-red-400 font-semibold hover:text-red-300 transition-colors text-xs uppercase tracking-wider focus:outline-none"
         >
           <span class="mr-2">←</span> BACK
         </button>
         <h1 class="text-xl font-bold mt-1 text-main tracking-tight">Shopping Mall Map</h1>
       </div>
-      <div class="text-xs text-muted/60 font-mono">SYSTEM: HYBRID_ROUTE_BUILDER_v13.5</div>
+      <div class="text-xs text-muted/60 font-mono">SYSTEM: MULTI_KIOSK_ROUTER_v14.0</div>
     </div>
 
     <div v-if="location" class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[85vh]">
@@ -148,12 +148,43 @@
             v-for="f in [3, 2, 1]" 
             :key="f"
             @click="activeFloor = f"
-            class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200"
+            class="px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 focus:outline-none cursor-pointer"
             :class="activeFloor === f ? 'bg-red-500 text-main shadow' : 'text-muted hover:text-main'"
           >
             Lvl {{ f }}
             <span v-if="location.floor === f" class="inline-block w-1.5 h-1.5 rounded-full bg-cyan-400 ml-1 animate-ping"></span>
           </button>
+        </div>
+
+        <div 
+          v-if="activeKioskProfile && location && activeKioskProfile.floor !== location.floor"
+          class="absolute top-16 left-4 z-50 max-w-sm w-80 bg-panel border border-line rounded-2xl p-4 font-mono text-xs shadow-xl animate-fade-in"
+        >
+          <div class="flex items-center gap-2 mb-2 text-red-400 font-bold uppercase tracking-wider">
+            <span>🔀 Cross-Floor Route Detected</span>
+          </div>
+          <p class="text-[11px] text-muted mb-3 font-sans leading-normal">
+            Target is on <strong>Level {{ location.floor }}</strong>. Pick your transport node:
+          </p>
+          <div class="grid grid-cols-3 gap-2">
+            <button
+              v-for="mode in [
+                { id: 'lift', label: 'Lift', icon: '🛗' },
+                { id: 'escalator', label: 'Escalator', icon: '🪜' },
+                { id: 'stairs', label: 'Stairs', icon: '🚶' }
+              ]"
+              :key="mode.id"
+              type="button"
+              @click="selectedTransitMode = mode.id"
+              class="py-2 rounded-xl border font-bold flex flex-col items-center gap-1 transition-all cursor-pointer focus:outline-none text-[10px]"
+              :class="selectedTransitMode === mode.id 
+                ? 'bg-red-500 text-white border-red-500 shadow' 
+                : 'bg-white/5 border-line/60 text-muted hover:text-main'"
+            >
+              <span class="text-base">{{ mode.icon }}</span>
+              <span>{{ mode.label }}</span>
+            </button>
+          </div>
         </div>
 
         <div 
@@ -165,7 +196,7 @@
               <span class="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
               Waypoints: <span class="text-main font-bold">{{ customNodes.length }}</span>
             </div>
-            <button @click="clearCustomRoute" class="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 font-bold rounded hover:bg-red-500/20 transition-all text-[10px]">Reset</button>
+            <button @click="clearCustomRoute" class="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 font-bold rounded hover:bg-red-500/20 transition-all text-[10px] cursor-pointer">Reset</button>
           </div>
 
           <div class="bg-black/40 border border-line/60 rounded-lg p-2 flex flex-col gap-1.5">
@@ -175,7 +206,7 @@
             </code>
             <button 
               @click="copyPathToClipboard" 
-              class="w-full py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded text-[10px] uppercase tracking-wide transition-colors cursor-pointer"
+              class="w-full py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded text-[10px] uppercase tracking-wide transition-colors cursor-pointer focus:outline-none"
             >
               {{ copiedStatus ? '✓ Copied!' : 'Copy Path String' }}
             </button>
@@ -205,9 +236,20 @@
                 <rect x="10" y="10" width="780" height="580" fill="none" stroke="#e2e8f0" stroke-width="3" rx="8" />
                 <component :is="floorComponent" :phone="location" />
 
-                <g v-if="location && activeFloor === location.floor">
-                  <path v-if="location.path" :d="location.path" fill="none" stroke="#ef4444" stroke-width="5" stroke-dasharray="12,10" stroke-linecap="round" stroke-linejoin="round" class="animate-route-flow" />
-                  <g :transform="`translate(${location.mapX}, ${location.mapY})`">
+                <g v-if="location">
+                  <path 
+                    v-if="targetedRoutePath" 
+                    :d="targetedRoutePath" 
+                    fill="none" 
+                    stroke="#ef4444" 
+                    stroke-width="5" 
+                    stroke-dasharray="12,10" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    class="animate-route-flow" 
+                  />
+                  
+                  <g v-if="activeFloor === location.floor" :transform="`translate(${location.mapX}, ${location.mapY})`">
                     <circle cx="0" cy="0" r="32" fill="#ef4444" opacity="0.12" class="animate-pulse" />
                     <ellipse cx="0" cy="2" rx="7" ry="2.5" fill="rgba(0, 0, 0, 0.25)" />
                     <path d="M 0 0 C -14 -18 -22 -28 -22 -40 A 22 22 0 1 1 22 -40 C 22 -28 14 -18 0 0 Z" fill="#ef4444" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" />
@@ -225,11 +267,34 @@
                   </g>
                 </g>
 
+                <g v-if="activeKioskProfile && activeKioskProfile.floor === activeFloor" :transform="`translate(${activeKioskProfile.x}, ${activeKioskProfile.y})`">
+                  <circle cx="0" cy="0" r="32" fill="#10b981" opacity="0.12" class="animate-pulse" />
+                  <ellipse cx="0" cy="2" rx="7" ry="2.5" fill="rgba(0, 0, 0, 0.2)" />
+                  <path d="M 0 0 C -14 -18 -22 -28 -22 -40 A 22 22 0 1 1 22 -40 C 22 -28 14 -18 0 0 Z" fill="#10b981" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" />
+                  <circle cx="0" cy="-40" r="9" fill="#ffffff" />
+                  <circle cx="0" cy="-40" r="4" fill="#10b981" />
+                </g>
+
+                <g v-if="kioskRegistry && kioskRegistry.transitHubs && location && activeKioskProfile && activeKioskProfile.floor !== location.floor">
+                  <g 
+                    v-for="hub in kioskRegistry.transitHubs[selectedTransitMode]" 
+                    v-show="hub.floor === activeFloor"
+                    :key="hub.floor"
+                    :transform="`translate(${hub.x}, ${hub.y})`"
+                  >
+                    <circle cx="0" cy="0" r="20" fill="#38bdf8" opacity="0.15" class="animate-ping" />
+                    <circle cx="0" cy="0" r="8" fill="#38bdf8" stroke="#ffffff" stroke-width="1.5" />
+                    <text x="0" y="-14" fill="#38bdf8" font-size="9" font-weight="black" font-family="mono" text-anchor="middle" class="uppercase">
+                      {{ selectedTransitMode }} Node
+                    </text>
+                  </g>
+                </g>
+
                 <g v-if="customPathString">
                   <path :d="customPathString" fill="none" stroke="#10b981" stroke-width="5" stroke-dasharray="8,8" stroke-linecap="round" stroke-linejoin="round" class="animate-custom-flow" />
                   <g v-for="(node, index) in customNodes" :key="index" :transform="`translate(${node.x}, ${node.y})`">
                     <circle cx="0" cy="0" r="5" fill="#10b981" stroke="#ffffff" stroke-width="1.5" />
-                    <text cx="0" cy="-10" fill="#047857" font-size="9" font-weight="bold" font-family="mono" text-anchor="middle">{{node.x}},{{node.y}}</text>
+                    <text x="0" y="-10" fill="#047857" font-size="9" font-weight="bold" font-family="mono" text-anchor="middle">{{node.x}},{{node.y}}</text>
                   </g>
                 </g>
               </svg>
@@ -241,11 +306,11 @@
           </div>
 
           <div class="absolute bottom-4 right-4 flex flex-col gap-1 shadow-md z-50">
-            <button @click.stop="uiZoom(0.3)" class="w-9 h-9 bg-panel text-main font-semibold text-lg rounded-t-lg border border-line flex items-center justify-center hover:bg-panel hover:brightness-110">+</button>
-            <button @click.stop="uiZoom(-0.3)" class="w-9 h-9 bg-panel text-main font-semibold text-lg rounded-b-lg border border-line flex items-center justify-center hover:bg-panel hover:brightness-110">−</button>
+            <button @click.stop="uiZoom(0.3)" class="w-9 h-9 bg-panel text-main font-semibold text-lg rounded-t-lg border border-line flex items-center justify-center hover:bg-panel hover:brightness-110 focus:outline-none cursor-pointer">+</button>
+            <button @click.stop="uiZoom(-0.3)" class="w-9 h-9 bg-panel text-main font-semibold text-lg rounded-b-lg border border-line flex items-center justify-center hover:bg-panel hover:brightness-110 focus:outline-none cursor-pointer">−</button>
           </div>
           <div class="absolute bottom-4 left-4 shadow-sm z-50">
-            <button @click.stop="resetMap" class="px-3 py-1.5 bg-panel text-main font-medium text-xs rounded-lg border border-line flex items-center gap-1.5 hover:bg-panel hover:brightness-110 transition-colors shadow">Recenter View</button>
+            <button @click.stop="resetMap" class="px-3 py-1.5 bg-panel text-main font-medium text-xs rounded-lg border border-line flex items-center gap-1.5 hover:bg-panel hover:brightness-110 transition-colors shadow focus:outline-none cursor-pointer">Recenter View</button>
           </div>
         </div>
 
@@ -281,6 +346,14 @@ const customNodes = ref([]);
 const hasDraggedMoved = ref(false);
 const copiedStatus = ref(false);
 
+// 🖥️ MULTI-KIOSK PLATFORM CONTEXT HOOK REGISTRIES
+const currentKioskId = ref(localStorage.getItem('ACTIVE_KIOSK_ID') || 'kiosk_floor1_main');
+const activeKioskProfile = ref(null);
+const kioskRegistry = ref(null);
+
+// 🌟 THE CROSS-FLOOR TRANSIT MODE TRACKER PARAMETER
+const selectedTransitMode = ref('lift'); // Toggles between: 'lift', 'escalator', 'stairs'
+
 const isModalOpen = ref(false);
 const selectedDeviceDetails = ref(null);
 
@@ -289,6 +362,35 @@ const location = computed(() => {
     String(item.id) === String(route.params.id) || 
     String(item.brandId) === String(route.params.id)
   );
+});
+
+// 🌟 ADJUSTED ROUTE PATH PATHWAY SELECTION SPLITTING MATRICES
+const targetedRoutePath = computed(() => {
+  if (!location.value || !activeKioskProfile.value) return '';
+  
+  const paths = location.value.kioskPaths?.[currentKioskId.value];
+  if (!paths) return '';
+
+  // Scene A: Standard same-floor mapping direction calculation
+  if (activeKioskProfile.value.floor === location.value.floor) {
+    return typeof paths === 'string' ? paths : '';
+  }
+
+  // Scene B: Multi-floor complex branch pathway segmentation loops
+  const transitBlock = paths[selectedTransitMode.value];
+  if (!transitBlock) return '';
+
+  // Show segment heading to the lift on the kiosk floor
+  if (activeFloor.value === activeKioskProfile.value.floor) {
+    return transitBlock.start_floor_segment || '';
+  }
+  
+  // Show segment leaving the lift on the target floor
+  if (activeFloor.value === location.value.floor) {
+    return transitBlock.target_floor_segment || '';
+  }
+
+  return '';
 });
 
 const currentBrandProfile = computed(() => {
@@ -381,7 +483,7 @@ const abortNavigation = () => {
 
 // --- PAN/ZOOM ENGINE ---
 watch(location, (newLocation) => {
-  if (newLocation) {
+  if (newLocation && !activeKioskProfile.value) {
     activeFloor.value = newLocation.floor;
   }
 }, { immediate: true });
@@ -397,17 +499,30 @@ const onZoom = (event) => {
 const uiZoom = (factor) => { zoomScale.value = Math.min(Math.max(0.4, zoomScale.value + factor), 3.5); };
 const handleMapMouseDown = (event) => { isDragging.value = true; hasDraggedMoved.value = false; startMouseX.value = event.clientX - panX.value; startMouseY.value = event.clientY - panY.value; };
 const onPan = (event) => { if (!isDragging.value) return; if (Math.abs(event.clientX - (startMouseX.value + panX.value)) > 5 || Math.abs(event.clientY - (startMouseY.value + panY.value)) > 5) { hasDraggedMoved.value = true; } panX.value = event.clientX - startMouseX.value; panY.value = event.clientY - startMouseY.value; };
-const endPan = (event) => { if (isDragging.value) { /*if (!hasDraggedMoved.value && mapSvgRef.value) { const rect = mapSvgRef.value.getBoundingClientRect(); const clickX = event.clientX - rect.left; const clickY = event.clientY - rect.top; customNodes.value.push({ x: Math.round((clickX / rect.width) * 800), y: Math.round((clickY / rect.height) * 600) }); }*/ isDragging.value = false; } };
+const endPan = (event) => { if (isDragging.value) { isDragging.value = false; } };
 const resetMap = () => { zoomScale.value = 1.0; panX.value = 0; panY.value = 0; };
 
 onMounted(async () => {
   try {
-    const [brandsResponse, subProductsResponse] = await Promise.all([
+    const [brandsResponse, subProductsResponse, kioskResponse] = await Promise.all([
       fetch('/SubProductsBrand.json'),
-      fetch('/SubProducts.json')
+      fetch('/SubProducts.json'),
+      fetch('/KioskRegistry.json')
     ]);
     brandList.value = await brandsResponse.json();
     allLocations.value = await subProductsResponse.json();
+    kioskRegistry.value = await kioskResponse.json();
+
+    // Safely assign properties matching the initialization schemas
+    if (kioskRegistry.value && Array.isArray(kioskRegistry.value.kisks)) {
+      activeKioskProfile.value = kioskRegistry.value.kisks.find(k => k.id === currentKioskId.value);
+    } else if (kioskRegistry.value && Array.isArray(kioskRegistry.value.kiosks)) {
+      activeKioskProfile.value = kioskRegistry.value.kiosks.find(k => k.id === currentKioskId.value);
+    }
+
+    if (activeKioskProfile.value) {
+      activeFloor.value = activeKioskProfile.value.floor;
+    }
 
     const exactProductMatch = allLocations.value.find(item => String(item.id) === String(route.params.id));
     if (!exactProductMatch) {
@@ -425,3 +540,19 @@ const getLocationImageUrl = (imageName) => {
   try { return new URL(`../assets/images/${imageName}`, import.meta.url).href; } catch { return ""; }
 };
 </script>
+
+<style scoped>
+@keyframes routeMove { to { stroke-dashoffset: -24; } }
+.animate-route-flow { animation: routeMove 1s linear infinite; }
+
+@keyframes customMove { to { stroke-dashoffset: -16; } }
+.animate-custom-flow { animation: customMove 0.8s linear infinite; }
+
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+.animate-fade-in { animation: fadeIn 0.18s cubic-bezier(0.215, 0.610, 0.355, 1) forwards; }
+
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.01); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.18); }
+</style>

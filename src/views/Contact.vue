@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="min-h-screen bg-app text-main px-4 md:px-8 py-6 relative font-sans">
     
     <div class="ambient-glow"></div>
@@ -114,7 +114,7 @@
     <div class="w-full mt-8 mb-16 form-content-card">
       <div class="mb-8 border-b border-line pb-6">
         <router-link to="/" class="inline-flex items-center text-red-400 font-semibold hover:text-red-300 transition-colors text-xs uppercase tracking-wider mb-3">
-          <span class="mr-2">←</span> Back to Home
+          <span class="mr-2">←</span> Back to Dashboard
         </router-link>
         <h1 class="text-4xl font-extrabold tracking-tight text-main sm:text-5xl mt-1">Support & Feedback Hub</h1>
         <p class="text-sm sm:text-base text-muted mt-2 max-w-3xl leading-relaxed">
@@ -347,11 +347,242 @@ onMounted(async () => {
 <style scoped>
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-line); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
 
 @keyframes fadeIn { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
 .animate-fade-in { animation: fadeIn 0.15s cubic-bezier(0.215, 0.610, 0.355, 1) forwards; }
 
 @keyframes slideDown { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 .animate-slide-down { animation: slideDown 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+</style> -->
+<template>
+  <div class="min-h-screen bg-app text-main px-4 md:px-8 py-6 relative font-sans flex flex-col justify-between selection:bg-red-500/30">
+    <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vh] rounded-full bg-red-500/5 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vh] rounded-full bg-emerald-500/5 blur-[120px] pointer-events-none"></div>
+
+    <div class="w-full pt-2 pb-5 border-b border-line backdrop-blur-md z-10">
+      <Header class="header-card" />
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
+        <div class="md:col-span-2 nav-card"><Sidebar /></div>
+        <div class="search-card"><SearchBar /></div>
+      </div>
+    </div>
+
+    <div class="w-full flex-grow flex items-center justify-center my-10 main-kiosk-card z-20">
+      <div 
+        class="w-full max-w-3xl border border-line rounded-[36px] p-8 md:p-12 relative min-h-[480px] flex flex-col justify-between transition-all duration-500 shadow-[0_30px_100px_rgba(0,0,0,0.8)] backdrop-blur-2xl bg-panel/40"
+        style="box-shadow: inset 0 1px 1px rgba(255,255,255,0.05), 0 25px 70px rgba(0,0,0,0.7);"
+      >
+        <div class="flex items-center justify-between border-b border-line/20 pb-5">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-xl bg-white/5 border border-line/60 flex items-center justify-center shadow-inner">
+              <span class="text-xl animate-pulse">⚡</span>
+            </div>
+            <div>
+              <h2 class="text-md font-black tracking-[0.05em] text-main uppercase font-mono">Response CENTER</h2>
+              <p class="text-[9px] font-mono text-muted/40 uppercase tracking-widest mt-0.5">FEEDBACK </p>
+            </div>
+          </div>
+          <div class="text-[10px] font-mono font-black tracking-widest text-red-400 bg-red-500/10 px-4 py-1.5 rounded-xl border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+            {{ currentKioskStep === 'category' ? 'PHASE 01 / 03' : currentKioskStep === 'app' ? 'PHASE 02 / 03' : currentKioskStep === 'cleanliness' ? 'PHASE 03 / 03' : 'PROCESS COMPLETE' }}
+          </div>
+        </div>
+
+        <div v-if="currentKioskStep === 'category'" class="flex-grow flex flex-col justify-center gap-8 py-6 animate-slide-down">
+          <div class="text-center">
+            <h3 class="text-xl md:text-2xl font-black tracking-tight text-main/90 uppercase font-mono">
+              Select Incident Domain
+            </h3>
+            <p class="text-xs text-muted/50 font-mono mt-1">What requires immediate support attention today?</p>
+          </div>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto w-full">
+            <button
+              v-for="domain in domainOptions"
+              :key="domain.id"
+              type="button"
+              @click="handleCategorySelection(domain.id)"
+              class="w-full text-left p-5 rounded-2xl border border-line/80 bg-white/[0.01] hover:border-red-500/40 hover:bg-white/[0.03] text-muted hover:text-main transition-all cubic-bezier(0.4, 0, 0.2, 1) duration-300 flex items-center gap-5 group focus:outline-none cursor-pointer shadow-lg active:scale-[0.98]"
+            >
+              <span class="text-3xl filter saturate-[0.8] brightness-90 group-hover:saturate-100 group-hover:brightness-110 group-hover:scale-110 transition-all duration-300 transform">{{ domain.emoji }}</span>
+              <div class="flex flex-col flex-1 min-w-0">
+                <span class="text-xs font-black tracking-wider uppercase text-main/90 font-mono">{{ domain.label }}</span>
+                <span class="text-[10px] text-muted/50 font-sans mt-1 leading-normal truncate group-hover:text-muted transition-colors">{{ domain.description }}</span>
+              </div>
+              <span class="text-xs text-muted/20 group-hover:text-red-400 transform translate-x-[-4px] group-hover:translate-x-0 transition-all duration-300 font-mono font-bold">➔</span>
+            </button>
+          </div>
+        </div>
+
+        <div v-if="currentKioskStep === 'app'" class="flex-grow flex flex-col justify-center items-center text-center gap-10 py-6 animate-slide-down">
+          <div class="flex flex-col gap-2">
+            <h3 class="text-xl md:text-2xl font-black tracking-tight text-main/90 uppercase font-mono">Rate Interface Fluidity</h3>
+            <p class="text-xs text-muted/40 font-mono max-w-xs mx-auto">Tap the emoji node matching your app navigation experience</p>
+          </div>
+          
+          <div class="flex justify-center items-center gap-2 sm:gap-4 flex-wrap">
+            <button 
+              v-for="emoji in kioskEmojis" 
+              :key="emoji.score"
+              type="button"
+              @click="handleQuizScore('app', emoji.score)"
+              class="flex flex-col items-center gap-3 p-4 w-24 rounded-2xl transition-all duration-300 border border-transparent hover:border-line hover:bg-white/[0.02] group/emoji transform hover:scale-110 active:scale-95 focus:outline-none cursor-pointer"
+            >
+              <span class="text-5xl filter brightness-95 group-hover/emoji:brightness-110 scale-animation drop-shadow-[0_4px_12px_rgba(0,0,0,0.3)]">{{ emoji.glyph }}</span>
+              <span class="text-[9px] uppercase font-black tracking-widest font-mono text-muted/30 group-hover/emoji:text-red-400 transition-colors mt-2">
+                {{ emoji.text }}
+              </span>
+            </button>
+          </div>
+          
+          <button type="button" @click="currentKioskStep = 'category'" class="text-[10px] font-black text-muted/40 hover:text-red-400 uppercase tracking-widest font-mono focus:outline-none cursor-pointer transition-colors border border-line/40 px-4 py-2 rounded-xl bg-white/[0.01]">
+            ← Return to Domains
+          </button>
+        </div>
+
+        <div v-if="currentKioskStep === 'cleanliness'" class="flex-grow flex flex-col justify-center items-center text-center gap-10 py-6 animate-slide-down">
+          <div class="flex flex-col gap-2">
+            <h3 class="text-xl md:text-2xl font-black tracking-tight text-main/90 uppercase font-mono">Rate Center Care & Upkeep</h3>
+            <p class="text-xs text-muted/40 font-mono max-w-xs mx-auto">Staging session data parameters package verification</p>
+          </div>
+
+          <div class="flex justify-center items-center gap-2 sm:gap-4 flex-wrap">
+            <button 
+              v-for="emoji in kioskEmojis" 
+              :key="emoji.score"
+              type="button"
+              @click="handleQuizScore('cleanliness', emoji.score)"
+              class="flex flex-col items-center gap-3 p-4 w-24 rounded-2xl transition-all duration-300 border border-transparent hover:border-line hover:bg-white/[0.02] group/emoji transform hover:scale-110 active:scale-95 focus:outline-none cursor-pointer"
+            >
+              <span class="text-5xl filter brightness-95 group-hover/emoji:brightness-110 scale-animation drop-shadow-[0_4px_12px_rgba(0,0,0,0.3)]">{{ emoji.glyph }}</span>
+              <span class="text-[9px] uppercase font-black tracking-widest font-mono text-muted/30 group-hover/emoji:text-red-400 transition-colors mt-2">
+                {{ emoji.text }}
+              </span>
+            </button>
+          </div>
+
+          <button type="button" @click="currentKioskStep = 'app'" class="text-[10px] font-black text-muted/40 hover:text-red-400 uppercase tracking-widest font-mono focus:outline-none cursor-pointer transition-colors border border-line/40 px-4 py-2 rounded-xl bg-white/[0.01]">
+            ← Back to Previous Index
+          </button>
+        </div>
+
+        <div v-if="currentKioskStep === 'success'" class="flex-grow flex flex-col justify-center items-center text-center gap-6 py-12 animate-slide-down">
+          <div class="relative flex items-center justify-center">
+            <div class="absolute inset-0 w-24 h-24 rounded-full bg-emerald-500/10 blur-xl animate-pulse"></div>
+            <div class="w-20 h-20 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-2xl flex items-center justify-center text-4xl animate-bounce shadow-inner">
+              ✓
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <h2 class="text-2xl md:text-3xl font-black text-main uppercase tracking-tight font-mono">FEEDBACK SUBMITTED</h2>
+            <p class="text-xs text-muted max-w-xs mx-auto font-medium leading-relaxed">
+              Your feedback has been submitted.
+            </p>
+          </div>
+          <div class="mt-4 text-[9px] font-mono text-emerald-400/60 uppercase tracking-widest bg-emerald-500/5 border border-emerald-500/10 px-4 py-2 rounded-xl animate-pulse">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> Refreashing...
+          </div>
+        </div>
+
+        <div class="w-full bg-white/5 h-[3px] rounded-full overflow-hidden mt-6 relative">
+          <div 
+            class="h-full rounded-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-500 ease-out shadow-[0_0_10px_rgba(239,68,68,0.5)]" 
+            :style="{ 
+              width: currentKioskStep === 'category' ? '25%' : currentKioskStep === 'app' ? '50%' : currentKioskStep === 'cleanliness' ? '75%' : '100%' 
+            }"
+          ></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="text-center text-[9px] font-mono text-muted/20 uppercase tracking-[0.3em] w-full border-t border-line/20 pt-5">
+      Terminal Identity: KIOSK_MN_NORTH_04 // Database Matrix Synced
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import gsap from 'gsap';
+
+import Header from "@/components/Header/Header.vue";
+import Sidebar from "@/components/Sidebar/Sidebar.vue";
+import SearchBar from "@/components/Search/SearchBar.vue";
+
+const currentKioskStep = ref('category');
+
+const kioskSessionLogs = ref({
+  categoryTarget: '',
+  appScore: 0,
+  cleanlinessScore: 0
+});
+
+const domainOptions = [
+  { id: 'navigation', label: 'Map Navigation', emoji: '📱', description: 'Glitches inside routing vectors or paths' },
+  { id: 'stores', label: 'Store Outlets', emoji: '🛍️', description: 'Incorrect level directory configurations' },
+  { id: 'upkeep', label: 'Mall Facilities', emoji: '🧹', description: 'Upkeep failures or facility breakdowns' },
+  { id: 'enquiry', label: 'General Help', emoji: '💬', description: 'Information desk or system UI inquiries' }
+];
+
+const kioskEmojis = [
+  { score: 1, glyph: '😡', text: 'Angry' },
+  { score: 2, glyph: '🙁', text: 'Poor' },
+  { score: 3, glyph: '😐', text: 'Neutral' },
+  { score: 4, glyph: '😊', text: 'Good' },
+  { score: 5, glyph: '🤩', text: 'Amazing' }
+];
+
+const handleCategorySelection = (categoryId) => {
+  kioskSessionLogs.value.categoryTarget = categoryId;
+  setTimeout(() => { currentKioskStep.value = 'app'; }, 150);
+};
+
+const handleQuizScore = (type, score) => {
+  if (type === 'app') {
+    kioskSessionLogs.value.appScore = score;
+    setTimeout(() => { currentKioskStep.value = 'cleanliness'; }, 200);
+  } else if (type === 'cleanliness') {
+    kioskSessionLogs.value.cleanlinessScore = score;
+    setTimeout(() => { executeKioskLogSubmission(); }, 200);
+  }
+};
+
+const executeKioskLogSubmission = () => {
+  currentKioskStep.value = 'success';
+  console.log("KIOSK MATRIX LOG BUNDLE PACKET:", JSON.parse(JSON.stringify(kioskSessionLogs.value)));
+  
+  setTimeout(() => {
+    kioskSessionLogs.value = { categoryTarget: '', appScore: 0, cleanlinessScore: 0 };
+    currentKioskStep.value = 'category';
+  }, 4000);
+};
+
+onMounted(() => {
+  const tl = gsap.timeline();
+  tl.from(".header-card", { opacity: 0, y: -30, duration: 0.8, ease: "power4.out" })
+    .from(".nav-card", { opacity: 0, x: -40, duration: 0.6, ease: "power3.out" }, "-=0.4")
+    .from(".search-card", { opacity: 0, x: 40, duration: 0.6, ease: "power3.out" }, "-=0.6")
+    .from(".main-kiosk-card", { opacity: 0, y: 30, scale: 0.99, duration: 0.8, ease: "back.out(1.2)" }, "-=0.4");
+});
+</script>
+
+<style scoped>
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.99); } to { opacity: 1; transform: scale(1); } }
+.animate-fade-in { animation: fadeIn 0.2s cubic-bezier(0.215, 0.610, 0.355, 1) forwards; }
+
+@keyframes slideDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.animate-slide-down { animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+.scale-animation {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.4);
+  will-change: transform;
+}
+.group\/emoji:hover .scale-animation {
+  transform: scale(1.38) translateY(-6px) rotate(3deg);
+}
+.group\/emoji:active .scale-animation {
+  transform: scale(0.9);
+}
 </style>

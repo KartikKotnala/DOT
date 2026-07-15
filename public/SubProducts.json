@@ -10,7 +10,37 @@
     "floor": 1,
     "mapX": 520,
     "mapY": 295,
-    "path": "M 400 550 L 400 295 L 520 295"
+    "kioskPaths": {
+      "kiosk_floor1_main": "M 400 550 L 400 295 L 520 295",
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 400 V 295 L 520 295"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 450 V 295 L 520 295"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 600 450 H 400 V 295 L 520 295"
+        }
+      },
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 H 400 V 295 L 520 295"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 450 V 295 L 520 295"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 600 450 H 400 V 295 L 520 295"
+        }
+      }
+    }
   },
   {
     "id": "p2",
@@ -23,7 +53,37 @@
     "floor": 1,
     "mapX": 520,
     "mapY": 295,
-    "path": "M 400 550 L 400 295 L 520 295"
+    "kioskPaths": {
+      "kiosk_floor1_main": "M 400 550 L 400 295 L 520 295",
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 400 V 295 L 520 295"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 450 V 295 L 520 295"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 600 450 H 400 V 295 L 520 295"
+        }
+      },
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 H 400 V 295 L 520 295"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 450 V 295 L 520 295"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 600 450 H 400 V 295 L 520 295"
+        }
+      }
+    }
   },
   {
     "id": "p3",
@@ -36,7 +96,37 @@
     "floor": 1,
     "mapX": 110,
     "mapY": 190,
-    "path": "M 400 550 L 400 460 L 210 460 L 210 190 L 110 190"
+    "kioskPaths": {
+      "kiosk_floor1_main": "M 400 550 L 400 460 L 210 460 L 210 190 L 110 190",
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 210 L 210 190 L 110 190"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 450 L 210 450 V 190 L 110 190"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 600 450 H 210 V 190 L 110 190"
+        }
+      },
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 H 210 L 210 190 L 110 190"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 450 L 210 450 V 190 L 110 190"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 600 450 H 210 V 190 L 110 190"
+        }
+      }
+    }
   },
   {
     "id": "p4",
@@ -49,7 +139,37 @@
     "floor": 1,
     "mapX": 110,
     "mapY": 190,
-    "path": "M 400 550 L 400 460 L 210 460 L 210 190 L 110 190"
+    "kioskPaths": {
+      "kiosk_floor1_main": "M 400 550 L 400 460 L 210 460 L 210 190 L 110 190",
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 210 L 210 190 L 110 190"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 450 L 210 450 V 190 L 110 190"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 600 450 H 210 V 190 L 110 190"
+        }
+      },
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 H 210 L 210 190 L 110 190"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 450 L 210 450 V 190 L 110 190"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 600 450 H 210 V 190 L 110 190"
+        }
+      }
+    }
   },
   {
     "id": "p5",
@@ -62,7 +182,37 @@
     "floor": 2,
     "mapX": 677,
     "mapY": 115,
-    "path": "M 398 500 V 440 H 605 V 173 H 678 V 122"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 H 605 V 173 H 678 V 122"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 150 H 605 V 173 H 678 V 122"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 620 440 V 173 H 678 V 122"
+        }
+      },
+      "kiosk_floor2_atrium": "M 400 300 H 605 V 173 H 678 V 122",
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 H 605 V 173 H 678 V 122"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 150 H 605 V 173 H 678 V 122"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 620 440 V 173 H 678 V 122"
+        }
+      }
+    }
   },
   {
     "id": "p6",
@@ -75,7 +225,37 @@
     "floor": 1,
     "mapX": 110,
     "mapY": 195,
-    "path": "M 400 550 L 400 460 L 210 460 L 210 195 L 110 195"
+    "kioskPaths": {
+      "kiosk_floor1_main": "M 400 550 L 400 460 L 210 460 L 210 195 L 110 195",
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 210 L 210 195 L 110 195"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 450 L 210 450 V 195 L 110 195"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 600 450 H 210 V 195 L 110 195"
+        }
+      },
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 H 210 L 210 195 L 110 195"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 450 L 210 450 V 195 L 110 195"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 600 450 H 210 V 195 L 110 195"
+        }
+      }
+    }
   },
   {
     "id": "p7",
@@ -88,7 +268,37 @@
     "floor": 1,
     "mapX": 110,
     "mapY": 295,
-    "path": "M 400 550 L 400 460 L 210 460 L 210 295 L 110 295"
+    "kioskPaths": {
+      "kiosk_floor1_main": "M 400 550 L 400 460 L 210 460 L 210 295 L 110 295",
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 210 L 210 295 L 110 295"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 450 L 210 450 V 295 L 110 295"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 600 450 H 210 V 295 L 110 295"
+        }
+      },
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 H 210 L 210 295 L 110 295"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 450 L 210 450 V 295 L 110 295"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 600 450 H 210 V 295 L 110 295"
+        }
+      }
+    }
   },
   {
     "id": "p8",
@@ -101,7 +311,37 @@
     "floor": 2,
     "mapX": 115,
     "mapY": 240,
-    "path": "M 400 504 V 446 H 200 V 243 H 114"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 H 200 V 243 H 114"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 150 H 200 V 243 H 114"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 620 440 V 243 H 114"
+        }
+      },
+      "kiosk_floor2_atrium": "M 400 300 H 200 V 243 H 114",
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 H 200 V 243 H 114"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 150 H 200 V 243 H 114"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 620 440 V 243 H 114"
+        }
+      }
+    }
   },
   {
     "id": "p9",
@@ -114,7 +354,37 @@
     "floor": 2,
     "mapX": 115,
     "mapY": 380,
-    "path": "M 401 503 V 447 H 199 V 384 H 115"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 H 199 V 384 H 115"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 150 H 199 V 384 H 115"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 620 440 V 384 H 115"
+        }
+      },
+      "kiosk_floor2_atrium": "M 400 300 H 199 V 384 H 115",
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 H 199 V 384 H 115"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 150 H 199 V 384 H 115"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 620 440 V 384 H 115"
+        }
+      }
+    }
   },
   {
     "id": "p10",
@@ -127,7 +397,37 @@
     "floor": 3,
     "mapX": 115,
     "mapY": 250,
-    "path": "M 401 500 V 250 H 115"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 V 250 H 115"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 210 V 250 H 115"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 590 445 L 400 250 H 115"
+        }
+      },
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 V 250 H 115"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 210 V 250 H 115"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 590 445 L 400 250 H 115"
+        }
+      },
+      "kiosk_floor3_foodcourt": "M 400 500 V 250 H 115"
+    }
   },
   {
     "id": "p11",
@@ -140,7 +440,37 @@
     "floor": 3,
     "mapX": 685,
     "mapY": 250,
-    "path": "M 400 498 V 255 H 684"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 H 400 V 255 H 684"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 210 V 255 H 684"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 590 445 V 255 H 684"
+        }
+      },
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 400 V 255 H 684"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 210 V 255 H 684"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 590 445 V 255 H 684"
+        }
+      },
+      "kiosk_floor3_foodcourt": "M 400 500 V 255 H 684"
+    }
   },
   {
     "id": "p12",
@@ -153,7 +483,37 @@
     "floor": 3,
     "mapX": 685,
     "mapY": 395,
-    "path": "M 400 503 V 402 H 685"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 H 400 V 402 H 685"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 210 V 402 H 685"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 590 445 V 402 H 685"
+        }
+      },
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 400 V 402 H 685"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 210 V 402 H 685"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 590 445 V 402 H 685"
+        }
+      },
+      "kiosk_floor3_foodcourt": "M 400 500 V 402 H 685"
+    }
   },
   {
     "id": "p13",
@@ -166,7 +526,37 @@
     "floor": 1,
     "mapX": 105,
     "mapY": 485,
-    "path": "M 400 550 L 400 460 L 210 460 L 210 485 L 105 485"
+    "kioskPaths": {
+      "kiosk_floor1_main": "M 400 550 L 400 460 L 210 460 L 210 485 L 105 485",
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 L 210 500 V 485 L 105 485"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 450 L 210 450 V 485 L 105 485"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 600 450 H 210 V 485 L 105 485"
+        }
+      },
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 L 210 500 V 485 L 105 485"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 450 L 210 450 V 485 L 105 485"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 600 450 H 210 V 485 L 105 485"
+        }
+      }
+    }
   },
   {
     "id": "p14",
@@ -179,7 +569,37 @@
     "floor": 1,
     "mapX": 310,
     "mapY": 115,
-    "path": "M 400 550 L 400 150 L 310 150 L 310 115"
+    "kioskPaths": {
+      "kiosk_floor1_main": "M 400 550 L 400 150 L 310 150 L 310 115",
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 310 V 150 L 310 115"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 450 L 400 150 H 310 V 115"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 600 450 H 400 V 150 H 310 V 115"
+        }
+      },
+      "kiosk_floor3_foodcourt": {
+        "lift": {
+          "start_floor_segment": "M 400 500 L 340 500",
+          "target_floor_segment": "M 340 500 H 310 V 150 L 310 115"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 500 L 400 210",
+          "target_floor_segment": "M 400 450 L 400 150 H 310 V 115"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 500 H 590 V 445",
+          "target_floor_segment": "M 600 450 H 400 V 150 H 310 V 115"
+        }
+      }
+    }
   },
   {
     "id": "p15",
@@ -192,7 +612,37 @@
     "floor": 3,
     "mapX": 552,
     "mapY": 510,
-    "path": "M 400 499 L 400 430 L 552 430 L 552 510"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 H 400 L 430 L 552 430 L 552 510"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 210 H 400 L 430 L 552 430 L 552 510"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 590 445 H 430 L 552 430 L 552 510"
+        }
+      },
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 400 L 430 L 552 430 L 552 510"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 210 H 400 L 430 L 552 430 L 552 510"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 590 445 H 430 L 552 430 L 552 510"
+        }
+      },
+      "kiosk_floor3_foodcourt": "M 400 500 L 400 430 L 552 430 L 552 510"
+    }
   },
   {
     "id": "p16",
@@ -205,7 +655,37 @@
     "floor": 3,
     "mapX": 110,
     "mapY": 120,
-    "path": "M 400 503 V 254 H 202 V 186 H 110 V 120"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 V 254 H 202 V 186 H 110 V 120"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 210 V 254 H 202 V 186 H 110 V 120"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 590 445 L 400 254 H 202 V 186 H 110 V 120"
+        }
+      },
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 V 254 H 202 V 186 H 110 V 120"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 210 V 254 H 202 V 186 H 110 V 120"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 590 445 L 400 254 H 202 V 186 H 110 V 120"
+        }
+      },
+      "kiosk_floor3_foodcourt": "M 400 500 V 254 H 202 V 186 H 110 V 120"
+    }
   },
   {
     "id": "p17",
@@ -218,7 +698,37 @@
     "floor": 3,
     "mapX": 248,
     "mapY": 122,
-    "path": "M 399 500 V 250 H 282 V 188 H 248 V 122"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 V 250 H 282 V 188 H 248 V 122"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 210 V 250 H 282 V 188 H 248 V 122"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 590 445 L 400 250 H 282 V 188 H 248 V 122"
+        }
+      },
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 V 250 H 282 V 188 H 248 V 122"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 210 V 250 H 282 V 188 H 248 V 122"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 590 445 L 400 250 H 282 V 188 H 248 V 122"
+        }
+      },
+      "kiosk_floor3_foodcourt": "M 400 500 V 250 H 282 V 188 H 248 V 122"
+    }
   },
   {
     "id": "p18",
@@ -231,7 +741,37 @@
     "floor": 3,
     "mapX": 692,
     "mapY": 120,
-    "path": "M 399 503 V 250 H 604 V 187 H 692 V 120"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 H 400 V 250 H 604 V 187 H 692 V 120"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 210 V 250 H 604 V 187 H 692 V 120"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 590 445 H 400 V 250 H 604 V 187 H 692 V 120"
+        }
+      },
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 400 V 250 H 604 V 187 H 692 V 120"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 210 V 250 H 604 V 187 H 692 V 120"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 590 445 H 400 V 250 H 604 V 187 H 692 V 120"
+        }
+      },
+      "kiosk_floor3_foodcourt": "M 400 500 V 250 H 604 V 187 H 692 V 120"
+    }
   },
   {
     "id": "p19",
@@ -244,6 +784,36 @@
     "floor": 3,
     "mapX": 549,
     "mapY": 123,
-    "path": "M 400 501 V 251 H 586 V 189 H 549 V 123"
+    "kioskPaths": {
+      "kiosk_floor1_main": {
+        "lift": {
+          "start_floor_segment": "M 400 550 L 400 500 H 340",
+          "target_floor_segment": "M 340 500 H 400 V 251 H 586 V 189 H 549 V 123"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 550 V 450",
+          "target_floor_segment": "M 400 210 V 251 H 586 V 189 H 549 V 123"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 550 H 600 V 450",
+          "target_floor_segment": "M 590 445 H 400 V 251 H 586 V 189 H 549 V 123"
+        }
+      },
+      "kiosk_floor2_atrium": {
+        "lift": {
+          "start_floor_segment": "M 400 300 H 340 V 500",
+          "target_floor_segment": "M 340 500 H 400 V 251 H 586 V 189 H 549 V 123"
+        },
+        "escalator": {
+          "start_floor_segment": "M 400 300 V 150",
+          "target_floor_segment": "M 400 210 V 251 H 586 V 189 H 549 V 123"
+        },
+        "stairs": {
+          "start_floor_segment": "M 400 300 H 620 V 440",
+          "target_floor_segment": "M 590 445 H 400 V 251 H 586 V 189 H 549 V 123"
+        }
+      },
+      "kiosk_floor3_foodcourt": "M 400 500 V 251 H 586 V 189 H 549 V 123"
+    }
   }
 ]
