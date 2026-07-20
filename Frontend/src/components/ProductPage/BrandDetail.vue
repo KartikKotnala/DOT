@@ -125,7 +125,7 @@ onMounted(async () => {
   try {
     const [productsResponse, brandsResponse] = await Promise.all([
       fetch("/ProductsNames.json"),
-      fetch("/SubProductsBrand.json"),
+      fetch('/SubProductsBrand.json'),
     ]);
 
     productList.value = await productsResponse.json();

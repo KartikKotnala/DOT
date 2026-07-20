@@ -1,5 +1,5 @@
 <template>
-  <div :data-theme="currentTheme" class="theme-wrapper min-h-screen">
+  <div :data-theme="currentTheme" class="theme-wrapper min-h-screen relative">
     <RouterView v-slot="{ Component, route }">
       <Transition
         name="page"
@@ -11,12 +11,16 @@
         />
       </Transition>
     </RouterView>
+
+    <carticon />
   </div>
 </template>
 
 <script setup>
 import { RouterView } from "vue-router";
 import { ref, provide, watch } from "vue";
+// Import the UI component matching your file tree
+import carticon from "@/components/UI/carticon.vue";
 
 // 1. Search Query Provider
 const searchQuery = ref("");

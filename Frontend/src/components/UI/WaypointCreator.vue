@@ -1,7 +1,7 @@
 <template>
   <div class="fixed bottom-6 right-6 z-[200] flex flex-col gap-3 font-mono text-xs max-w-sm w-85">
     
-    <div class="bg-zinc-950/90 backdrop-blur-xl border border-zinc-800 rounded-2xl p-4 shadow-2xl flex flex-col gap-3">
+    <!-- <div class="bg-zinc-950/90 backdrop-blur-xl border border-zinc-800 rounded-2xl p-4 shadow-2xl flex flex-col gap-3">
       
       <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
         <div class="flex items-center gap-2 text-emerald-400 font-bold uppercase tracking-wider">
@@ -40,7 +40,7 @@
           </button>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

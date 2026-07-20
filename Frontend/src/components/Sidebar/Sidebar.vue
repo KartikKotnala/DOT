@@ -22,7 +22,7 @@
 const navItems = [
   { name: "Home", path: "/" },
   { name: "Products", path: "/products" },
-  { name: "Map", path: "/phone/p1/directions" }, // Defaulting to the map view
+  { name: "Cart", path: "/cart" }, 
   { name: "Assistant", path: "/assistant" },
   { name: "Complaint", path: "/contact" },
 ];

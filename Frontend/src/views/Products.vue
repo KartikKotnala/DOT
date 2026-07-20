@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import gsap from "gsap";
 import { useRouter } from "vue-router"; 
 
@@ -54,18 +54,28 @@ import BrandSlider from "@/components/ProductPage/BrandSlider.vue";
 const router = useRouter();
 const brands = ref([]);
 
-onMounted(async() => {
-  const tl = gsap.timeline();
-  tl.from(".header-card", { opacity: 0, y: -40, duration: 0.8 })
-    .from(".nav-card", { opacity: 0, x: -50, duration: 0.6 }, "-=0.3")
-    .from(".search-card", { opacity: 0, x: 50, duration: 0.6 }, "-=0.6")
-    .from(".hero-card", { opacity: 0, y: 50, scale: 0.96, duration: 0.8, stagger: 0.2 }, "-=0.2");
-    
+onMounted(async () => {
   try {
+    // 1. Fetch products data from API or JSON
     const response = await fetch('/ProductsNames.json');
     brands.value = await response.json();
-  } catch(error) {
-    console.error("error to load the data", error);
+
+    // 2. Wait for Vue to render the .hero-card DOM elements
+    await nextTick();
+
+    // 3. Trigger GSAP Timeline AFTER DOM is fully updated
+    const tl = gsap.timeline();
+    tl.fromTo(".header-card", { opacity: 0, y: -40 }, { opacity: 1, y: 0, duration: 0.8, clearProps: "all" })
+      .fromTo(".nav-card", { opacity: 0, x: -50 }, { opacity: 1, x: 0, duration: 0.6, clearProps: "all" }, "-=0.3")
+      .fromTo(".search-card", { opacity: 0, x: 50 }, { opacity: 1, x: 0, duration: 0.6, clearProps: "all" }, "-=0.6")
+      .fromTo(".hero-card", 
+        { opacity: 0, y: 50, scale: 0.96 }, 
+        { opacity: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.2, clearProps: "all" }, 
+        "-=0.2"
+      );
+
+  } catch (error) {
+    console.error("Error loading products data:", error);
   }
 });
 
