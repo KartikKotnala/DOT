@@ -1,7 +1,186 @@
 <template>
   <div class="min-h-screen bg-app text-main px-4 md:px-8 py-6 relative font-sans select-none">
     
-    <div class="flex items-center justify-between border-b border-line pb-4 mb-6">
+    <div 
+      v-if="isCheckoutModalOpen" 
+      class="fixed inset-0 z-[120] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in print:hidden"
+      @click.self="closeCheckoutModal"
+    >
+      <div class="bg-panel border border-line w-full max-w-lg rounded-3xl p-6 shadow-2xl relative flex flex-col gap-5 text-main font-mono">
+        
+        <button 
+          @click="closeCheckoutModal" 
+          class="absolute top-4 right-4 text-muted hover:text-main text-sm font-bold transition-colors focus:outline-none cursor-pointer"
+        >
+          ✕
+        </button>
+
+        <div class="border-b border-line pb-3">
+          <span class="text-[10px] text-red-400 font-bold uppercase tracking-widest block mb-0.5">Quick Kiosk Checkout</span>
+          <h2 class="text-lg font-black text-main uppercase">Customer Information</h2>
+        </div>
+
+        <form @submit.prevent="submitFinalOrder" class="flex flex-col gap-4 text-xs">
+          <div>
+            <label class="block text-[10px] uppercase text-muted font-bold mb-1">Full Name <span class="text-red-400">*</span></label>
+            <input 
+              v-model="customer.name" 
+              type="text" 
+              required
+              placeholder="e.g. John Doe" 
+              class="w-full bg-white/5 border border-line rounded-xl px-3 py-2.5 text-main focus:outline-none focus:border-red-500 transition-colors"
+            />
+          </div>
+
+          <div>
+            <label class="block text-[10px] uppercase text-muted font-bold mb-1">Mobile Number <span class="text-red-400">*</span></label>
+            <input 
+              v-model="customer.phone" 
+              type="tel" 
+              required
+              placeholder="e.g. +91 9876543210" 
+              class="w-full bg-white/5 border border-line rounded-xl px-3 py-2.5 text-main focus:outline-none focus:border-red-500 transition-colors"
+            />
+          </div>
+
+          <div>
+            <label class="block text-[10px] uppercase text-muted font-bold mb-1">Email Address</label>
+            <input 
+              v-model="customer.email" 
+              type="email" 
+              placeholder="e.g. john@example.com" 
+              class="w-full bg-white/5 border border-line rounded-xl px-3 py-2.5 text-main focus:outline-none focus:border-red-500 transition-colors"
+            />
+          </div>
+
+          <div>
+            <label class="block text-[10px] uppercase text-muted font-bold mb-1.5">Payment Option</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button
+                v-for="method in [
+                  { id: 'upi', label: 'UPI / QR', icon: '📱' },
+                  { id: 'card', label: 'Card Tap', icon: '💳' },
+                  { id: 'cash', label: 'Pay at Store', icon: '💵' }
+                ]"
+                :key="method.id"
+                type="button"
+                @click.prevent="selectPaymentMethod(method.id)"
+                class="py-2.5 px-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition-all cursor-pointer font-bold"
+                :class="paymentMethod === method.id 
+                  ? 'bg-red-600/20 border-red-500 text-white shadow-md' 
+                  : 'bg-white/5 border-line/60 text-muted hover:text-main'"
+              >
+                <span class="text-base">{{ method.icon }}</span>
+                <span class="text-[10px]">{{ method.label }}</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-white/5 border border-line/60 rounded-xl p-3 flex justify-between items-center text-xs my-1">
+            <span class="text-muted">Payable Amount:</span>
+            <span class="text-emerald-400 font-extrabold text-sm">₹{{ grandTotal.toLocaleString() }}</span>
+          </div>
+
+          <button 
+            type="submit"
+            :disabled="isSubmitting"
+            class="w-full py-3.5 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 cursor-pointer mt-2"
+          >
+            {{ isSubmitting ? 'Processing...' : 'Confirm & Generate Receipt' }}
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+
+    <div 
+      v-if="completedOrder" 
+      class="fixed inset-0 z-[150] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in"
+    >
+      <div class="bg-white text-black w-full max-w-sm rounded-3xl p-6 shadow-2xl relative flex flex-col gap-4 font-mono text-xs printable-receipt">
+        
+        <div class="text-center border-b border-dashed border-gray-400 pb-3">
+          <h2 class="text-base font-black tracking-tight uppercase">SMART MALL KIOSK</h2>
+          <p class="text-[10px] text-gray-600">Level 2 Central Atrium Kiosk</p>
+          <div class="mt-2 text-[11px] font-bold bg-gray-100 py-1 px-2 rounded-lg inline-block">
+            ORDER: {{ completedOrder.orderCode }}
+          </div>
+        </div>
+
+        <div class="space-y-1 text-[11px] border-b border-dashed border-gray-400 pb-3">
+          <div class="flex justify-between">
+            <span class="text-gray-500">Customer:</span>
+            <span class="font-bold">{{ completedOrder.customerName }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">Phone:</span>
+            <span class="font-bold">{{ completedOrder.customerPhone }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">Payment:</span>
+            <span class="font-bold uppercase">{{ completedOrder.paymentMethod }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">Date:</span>
+            <span>{{ new Date().toLocaleDateString() }} {{ new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }}</span>
+          </div>
+        </div>
+
+        <div class="space-y-2 max-h-40 overflow-y-auto pr-1 border-b border-dashed border-gray-400 pb-3">
+          <div 
+            v-for="item in completedOrder.items" 
+            :key="item.id" 
+            class="flex justify-between items-start text-[11px]"
+          >
+            <div class="flex-1 pr-2">
+              <p class="font-bold truncate">{{ item.name }}</p>
+              <p class="text-[9px] text-gray-500">Qty: {{ item.quantity }} × ₹{{ item.price.toLocaleString() }}</p>
+            </div>
+            <span class="font-bold">₹{{ (item.price * item.quantity).toLocaleString() }}</span>
+          </div>
+        </div>
+
+        <div class="space-y-1 text-[11px]">
+          <div class="flex justify-between text-gray-600">
+            <span>Subtotal:</span>
+            <span>₹{{ completedOrder.subtotal.toLocaleString() }}</span>
+          </div>
+          <div class="flex justify-between text-gray-600">
+            <span>GST (18%):</span>
+            <span>₹{{ completedOrder.tax.toLocaleString() }}</span>
+          </div>
+          <div class="flex justify-between text-sm font-black border-t border-black pt-2 mt-1">
+            <span>TOTAL PAID:</span>
+            <span>₹{{ completedOrder.grandTotal.toLocaleString() }}</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center justify-center pt-2 border-t border-dashed border-gray-400">
+          <QrcodeVue :value="completedOrder.orderCode" :size="75" level="H" />
+          <p class="text-[9px] text-gray-500 mt-1">Scan at store counter for pickup</p>
+        </div>
+
+        <div class="flex gap-2 pt-2 print:hidden">
+          <button 
+            @click="printReceipt" 
+            class="flex-1 py-3 bg-black hover:bg-gray-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md"
+          >
+            🖨️ Print Receipt
+          </button>
+          <button 
+            @click="finishOrderSession" 
+            class="py-3 px-4 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold text-xs uppercase rounded-xl transition-all cursor-pointer"
+          >
+            Done
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <div class="flex items-center justify-between border-b border-line pb-4 mb-6 print:hidden">
       <div>
         <button 
           @click="goBack" 
@@ -15,8 +194,8 @@
     </div>
 
     <div 
-      v-if="cartItems.length === 0" 
-      class="flex flex-col items-center justify-center py-20 bg-panel/40 border border-line rounded-3xl text-center shadow-xl max-w-xl mx-auto"
+      v-if="cartItems.length === 0 && !completedOrder" 
+      class="flex flex-col items-center justify-center py-20 bg-panel/40 border border-line rounded-3xl text-center shadow-xl max-w-xl mx-auto print:hidden"
     >
       <div class="w-20 h-20 bg-white/5 border border-line rounded-full flex items-center justify-center text-3xl mb-4">
         🛒
@@ -33,7 +212,7 @@
       </button>
     </div>
 
-    <div v-else class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[80vh]">
+    <div v-else-if="!completedOrder" class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[80vh] print:hidden">
       
       <div class="lg:col-span-8 bg-panel/30 border border-line rounded-3xl p-5 flex flex-col gap-3 overflow-y-auto custom-scrollbar h-full">
         
@@ -74,9 +253,6 @@
             <h3 class="text-sm font-bold text-main truncate">{{ item.name }}</h3>
             <p class="text-xs font-mono font-bold text-emerald-400 mt-1">
               ₹{{ ((item.price || 0) * item.quantity).toLocaleString() }}
-              <span v-if="item.quantity > 1" class="text-[10px] text-muted font-normal">
-                (₹{{ (item.price || 0).toLocaleString() }} each)
-              </span>
             </p>
           </div>
 
@@ -99,7 +275,6 @@
           <button 
             @click="removeFromCart(item.id)"
             class="text-muted/40 hover:text-red-400 p-2 text-sm font-mono transition-colors focus:outline-none cursor-pointer ml-1"
-            title="Remove item"
           >
             ✕
           </button>
@@ -108,7 +283,6 @@
       </div>
 
       <div class="lg:col-span-4 bg-panel border border-line rounded-3xl p-6 flex flex-col justify-between shadow-2xl h-full font-mono">
-        
         <div>
           <h2 class="text-base font-extrabold text-main uppercase tracking-tight border-b border-line pb-4 mb-4">
             Order Summary
@@ -139,18 +313,12 @@
 
         <div class="flex flex-col gap-3 mt-6">
           <button 
-            @click="proceedToCheckout"
-            :disabled="isSubmitting"
-            class="w-full py-4 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-widest rounded-2xl shadow-lg transition-all duration-200 transform active:scale-[0.98] cursor-pointer focus:outline-none"
+            @click="openCheckoutModal"
+            class="w-full py-4 bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase tracking-widest rounded-2xl shadow-lg transition-all duration-200 transform active:scale-[0.98] cursor-pointer focus:outline-none"
           >
-            {{ isSubmitting ? 'Processing Order...' : 'Proceed to Checkout' }}
+            Proceed to Checkout
           </button>
-
-          <p class="text-[10px] text-muted/50 text-center font-sans">
-            🔒 Secure local kiosk session. Post direct order to MySQL.
-          </p>
         </div>
-
       </div>
 
     </div>
@@ -160,56 +328,82 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-// 🛒 Import Global Cart Composable
 import { useCart } from '@/usecart';
+import QrcodeVue from 'qrcode.vue';
 
 const router = useRouter();
-
-// 🛒 Extract State & Actions from useCart
 const { cartItems, totalItemCount, subtotal, increaseQty, decreaseQty, removeFromCart, clearCart } = useCart();
 
+const isCheckoutModalOpen = ref(false);
 const isSubmitting = ref(false);
+const completedOrder = ref(null); // Stores receipt data after order creation
 
-// Calculated Totals
+const customer = ref({ name: '', phone: '', email: '' });
+const paymentMethod = ref('upi');
+
+const selectPaymentMethod = (methodId) => { paymentMethod.value = methodId; };
+
 const tax = computed(() => Math.round(subtotal.value * 0.18));
 const grandTotal = computed(() => subtotal.value + tax.value);
 
-const goBack = () => {
-  router.back();
-};
+const goBack = () => router.back();
+const openCheckoutModal = () => { if (cartItems.value.length > 0) isCheckoutModalOpen.value = true; };
+const closeCheckoutModal = () => { isCheckoutModalOpen.value = false; };
 
-// 🚀 Live Checkout Handler connecting to Port 5001 API
-const proceedToCheckout = async () => {
-  if (cartItems.value.length === 0) return;
+// 🚀 Submit Order to Express API
+const submitFinalOrder = async () => {
   isSubmitting.value = true;
+
+  const payload = {
+    kioskId: localStorage.getItem('ACTIVE_KIOSK_ID') || 'kiosk_floor2_atrium',
+    customerName: customer.value.name.trim(),
+    customerPhone: customer.value.phone.trim(),
+    customerEmail: customer.value.email.trim() || 'N/A',
+    paymentMethod: paymentMethod.value,
+    items: [...cartItems.value],
+    subtotal: subtotal.value,
+    tax: tax.value,
+    grandTotal: grandTotal.value
+  };
 
   try {
     const response = await fetch('http://localhost:5001/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        kioskId: localStorage.getItem('ACTIVE_KIOSK_ID') || 'kiosk_floor2_atrium',
-        items: cartItems.value,
-        subtotal: subtotal.value,
-        tax: tax.value,
-        grandTotal: grandTotal.value
-      })
+      body: JSON.stringify(payload)
     });
 
     const data = await response.json();
+
     if (data.success) {
-      alert(`🎉 Order Placed Successfully!\nYour Order Receipt Code: ${data.orderCode}`);
+      // Store completed order info to render receipt
+      completedOrder.value = {
+        ...payload,
+        orderCode: data.orderCode
+      };
+      
       clearCart();
-      router.push('/products');
+      closeCheckoutModal();
+      customer.value = { name: '', phone: '', email: '' };
     } else {
-      alert("Checkout failed: " + (data.error || "Unknown server error"));
+      alert("Checkout error: " + (data.error || "Could not process order"));
     }
   } catch (error) {
-    console.error("Order submission error:", error);
+    console.error("Submission failed:", error);
     alert("Server error connecting to Port 5001.");
   } finally {
     isSubmitting.value = false;
   }
+};
+
+// 🖨️ Trigger Browser/POS Printer
+const printReceipt = () => {
+  window.print();
+};
+
+const finishOrderSession = () => {
+  completedOrder.value = null;
+  router.push('/products');
 };
 
 const getImageUrl = (imageName) => {
@@ -222,8 +416,30 @@ const getImageUrl = (imageName) => {
 </script>
 
 <style scoped>
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+.animate-fade-in { animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
 .custom-scrollbar::-webkit-scrollbar { width: 5px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.01); border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 10px; }
-.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.18); }
+
+/* 🖨️ CSS PRINT RULES: Hides entire web page except the receipt modal when printing */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .printable-receipt, .printable-receipt * {
+    visibility: visible;
+  }
+  .printable-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 15px;
+    box-shadow: none;
+    border: none;
+  }
+}
 </style>
