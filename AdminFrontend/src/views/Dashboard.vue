@@ -5,25 +5,18 @@
       <div>
         <div class="flex items-center gap-2">
           <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Kiosk Control Center</span>
+          <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Kiosk Command Center</span>
         </div>
         <h1 class="text-2xl font-black tracking-tight text-white mt-1">MALL ADMIN DASHBOARD</h1>
       </div>
 
       <div class="flex items-center gap-3">
         <button 
-          @click="activeTab = 'orders'" 
-          class="px-4 py-2 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer"
-          :class="activeTab === 'orders' ? 'bg-red-600 text-white shadow-lg' : 'bg-slate-900 text-slate-400 hover:text-white'"
-        >
-          📋 Live Orders ({{ orders.length }})
-        </button>
-        <button 
           @click="fetchOrders" 
-          class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-xs font-bold transition-all cursor-pointer"
-          title="Refresh Data"
+          :disabled="isLoading"
+          class="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2"
         >
-          🔄
+          <span>{{ isLoading ? 'Refreshing...' : '🔄 Refresh Orders' }}</span>
         </button>
       </div>
     </header>
@@ -48,18 +41,36 @@
     </div>
 
     <div class="space-y-4">
-      <div class="flex justify-between items-center">
-        <h2 class="text-sm font-extrabold uppercase text-slate-400 tracking-wider">Incoming Kiosk Orders</h2>
-        <span class="text-[10px] text-slate-500">Auto-refreshing every 10s</span>
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/40 p-3 rounded-2xl border border-slate-800">
+        <h2 class="text-xs font-extrabold uppercase text-slate-400 tracking-wider px-2">
+          Live Order Feed ({{ filteredOrders.length }})
+        </h2>
+
+        <div class="flex flex-wrap gap-1.5">
+          <button 
+            v-for="filter in ['All', 'Pending', 'Processing', 'Completed', 'Cancelled']" 
+            :key="filter"
+            @click="selectedFilter = filter"
+            class="px-3 py-1.5 rounded-xl text-[11px] font-bold uppercase transition-all cursor-pointer"
+            :class="selectedFilter === filter ? 'bg-red-600 text-white shadow-md' : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'"
+          >
+            {{ filter }}
+          </button>
+        </div>
       </div>
 
-      <div v-if="orders.length === 0" class="text-center py-16 bg-slate-900/30 border border-slate-800 rounded-3xl text-slate-500">
-        No customer orders recorded yet.
+      <div v-if="isLoading && orders.length === 0" class="text-center py-16 bg-slate-900/30 border border-slate-800 rounded-3xl text-slate-500">
+        Connecting to Backend on Port 5001...
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div v-else-if="filteredOrders.length === 0" class="text-center py-16 bg-slate-900/30 border border-slate-800 rounded-3xl text-slate-500">
+        No orders found under "{{ selectedFilter }}" status.
+      </div>
+
+      <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div 
-          v-for="order in orders" 
+          v-for="order in filteredOrders" 
           :key="order.id"
           class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between gap-4 hover:border-slate-700 transition-all shadow-xl"
         >
@@ -106,7 +117,7 @@
           </div>
 
           <div class="space-y-1.5 my-1">
-            <span class="text-[10px] uppercase font-bold text-slate-500">Items Ordered:</span>
+            <span class="text-[10px] uppercase font-bold text-slate-500">Ordered Items:</span>
             <div 
               v-for="item in order.items" 
               :key="item.id" 
@@ -117,19 +128,20 @@
             </div>
           </div>
 
-          <div class="flex items-center justify-between border-t border-slate-800 pt-3">
-            <span class="text-[10px] text-slate-500 uppercase font-bold">Update Status:</span>
-            <div class="flex gap-1.5">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-slate-800 pt-3 gap-2">
+            <span class="text-[10px] text-slate-500 uppercase font-bold">Process Order:</span>
+            <div class="flex flex-wrap gap-1.5 w-full sm:w-auto">
               <button 
-                v-for="st in ['Pending', 'Processing', 'Completed', 'Cancelled']" 
-                :key="st"
-                @click="updateOrderStatus(order.id, st)"
-                class="px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer"
-                :class="order.status === st 
+                v-for="statusOption in ['Pending', 'Processing', 'Completed', 'Cancelled']" 
+                :key="statusOption"
+                @click="updateOrderStatus(order.id, statusOption)"
+                :disabled="order.status === statusOption"
+                class="flex-1 sm:flex-initial px-3 py-1.5 text-[10px] font-bold rounded-lg border transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+                :class="order.status === statusOption 
                   ? 'bg-slate-800 border-slate-600 text-white shadow-sm' 
-                  : 'border-slate-800 text-slate-500 hover:text-slate-300'"
+                  : 'border-slate-800 text-slate-400 hover:text-white hover:border-slate-600 bg-slate-950'"
               >
-                {{ st }}
+                {{ statusOption }}
               </button>
             </div>
           </div>
@@ -144,21 +156,25 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 
-const activeTab = ref('orders');
 const orders = ref([]);
+const selectedFilter = ref('All');
+const isLoading = ref(false);
 let autoRefreshTimer = null;
 
-// Fetch Live Orders from Express Port 5001 API
+// 1. Fetch Orders from Express API (Port 5001)
 const fetchOrders = async () => {
+  isLoading.value = true;
   try {
     const res = await fetch('http://localhost:5001/api/admin/orders');
     orders.value = await res.json();
   } catch (err) {
     console.error('Failed to fetch admin orders:', err);
+  } finally {
+    isLoading.value = false;
   }
 };
 
-// Update Order Status in MySQL
+// 2. Update Order Status in Express API & MySQL
 const updateOrderStatus = async (orderId, newStatus) => {
   try {
     const res = await fetch(`http://localhost:5001/api/admin/orders/${orderId}/status`, {
@@ -170,19 +186,28 @@ const updateOrderStatus = async (orderId, newStatus) => {
     if (data.success) {
       const order = orders.value.find(o => o.id === orderId);
       if (order) order.status = newStatus;
+    } else {
+      alert("Error updating order status");
     }
   } catch (err) {
     console.error('Failed to update status:', err);
+    alert("Server error connecting to Port 5001");
   }
 };
 
-// Revenue & Counts
+// 3. Computed Metrics & Filters
+const filteredOrders = computed(() => {
+  if (selectedFilter.value === 'All') return orders.value;
+  return orders.value.filter(o => o.status === selectedFilter.value);
+});
+
 const totalRevenue = computed(() => orders.value.reduce((acc, o) => acc + Number(o.grandTotal || 0), 0));
 const pendingOrdersCount = computed(() => orders.value.filter(o => o.status === 'Pending').length);
 const completedOrdersCount = computed(() => orders.value.filter(o => o.status === 'Completed').length);
 
 onMounted(() => {
   fetchOrders();
+  // Auto-refresh order feed every 10 seconds
   autoRefreshTimer = setInterval(fetchOrders, 10000);
 });
 
