@@ -3,6 +3,8 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
+const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
 const db = require('./db');
 require('dotenv').config();
 
@@ -11,6 +13,17 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// ---------------------------------------------------------
+// Email Transporter Setup (for OTP verification)
+// ---------------------------------------------------------
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
 // ---------------------------------------------------------
 // File Upload & Static Asset Setup
@@ -45,6 +58,138 @@ app.post('/api/admin/upload', upload.single('file'), (req, res) => {
     res.json({ imageUrl: relativePath });
   } catch (err) {
     console.error('[API Error] Upload handler:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------------------------
+// AUTHENTICATION & USER MANAGEMENT ROUTES
+// ---------------------------------------------------------
+
+// 1. REGISTER DETAILS & SEND 3-MINUTE OTP
+app.post('/api/auth/register', async (req, res) => {
+  const { name, email, password, role } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Name, email, and password are required' });
+  }
+
+  const userRole = role === 'admin' ? 'admin' : 'agent';
+
+  try {
+    const [existing] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (existing.length > 0 && existing[0].is_verified) {
+      return res.status(400).json({ error: 'User with this email already exists. Please log in.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 3 * 60 * 1000); // 3-minute limit
+
+    if (existing.length > 0) {
+      await db.query(
+        'UPDATE users SET name = ?, password = ?, role = ?, otp_code = ?, otp_expires_at = ? WHERE email = ?',
+        [name, hashedPassword, userRole, otp, expiresAt, email]
+      );
+    } else {
+      await db.query(
+        'INSERT INTO users (name, email, password, role, otp_code, otp_expires_at, is_verified, status) VALUES (?, ?, ?, ?, ?, ?, 0, "pending")',
+        [name, email, hashedPassword, userRole, otp, expiresAt]
+      );
+    }
+
+    await transporter.sendMail({
+      from: `"Kiosk Portal" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Your Portal OTP Verification Code',
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+          <h2 style="color: #1e293b;">Kiosk Portal Registration</h2>
+          <p>Your 6-digit verification code for role <strong>${userRole.toUpperCase()}</strong> is:</p>
+          <h1 style="color: #2563eb; letter-spacing: 6px; font-size: 32px;">${otp}</h1>
+          <p style="color: #dc2626; font-size: 12px; font-weight: bold;">⚠️ Code expires in 3 minutes.</p>
+        </div>
+      `
+    });
+
+    console.log(`[AUTH] Sent 3-min OTP (${otp}) to ${email}`);
+    res.json({ success: true, message: 'OTP sent to your email! Code expires in 3 minutes.' });
+
+  } catch (err) {
+    console.error('[AUTH Error] Register:', err);
+    res.status(500).json({ error: 'Failed to process registration or send email' });
+  }
+});
+
+// 2. VERIFY OTP & CLEAR IT FROM DATABASE
+app.post('/api/auth/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (rows.length === 0) return res.status(404).json({ error: 'User record not found' });
+
+    const user = rows[0];
+
+    if (!user.otp_code || user.otp_code !== otp) {
+      return res.status(400).json({ error: 'Invalid verification code' });
+    }
+
+    if (new Date(user.otp_expires_at) < new Date()) {
+      await db.query('UPDATE users SET otp_code = NULL, otp_expires_at = NULL WHERE email = ?', [email]);
+      return res.status(400).json({ error: 'OTP code has expired (3 min limit). Please request a new code.' });
+    }
+
+    await db.query(
+      'UPDATE users SET is_verified = 1, otp_code = NULL, otp_expires_at = NULL WHERE email = ?',
+      [email]
+    );
+
+    res.json({
+      success: true,
+      message: 'Email verified successfully! Account submitted for access approval.'
+    });
+
+  } catch (err) {
+    console.error('[AUTH Error] Verify OTP:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 3. LOGIN
+app.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (rows.length === 0) return res.status(401).json({ error: 'User does not exist' });
+
+    const user = rows[0];
+
+    if (!user.is_verified) {
+      return res.status(401).json({ error: 'Email not verified. Please complete OTP verification.' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Incorrect password' });
+    }
+
+    if (user.status === 'pending') {
+      return res.status(403).json({ error: 'Account pending manager approval. Please wait for access grant.' });
+    }
+
+    if (user.status === 'rejected') {
+      return res.status(403).json({ error: 'Your access request was rejected.' });
+    }
+
+    res.json({
+      success: true,
+      user: { id: user.id, name: user.name, email: user.email, role: user.role }
+    });
+
+  } catch (err) {
+    console.error('[AUTH Error] Login:', err);
     res.status(500).json({ error: err.message });
   }
 });
