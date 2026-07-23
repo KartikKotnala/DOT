@@ -121,7 +121,7 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// 2. VERIFY OTP & CLEAR IT FROM DATABASE
+// 2. VERIFY OTP & AUTOMATICALLY APPROVE USER
 app.post('/api/auth/verify-otp', async (req, res) => {
   const { email, otp } = req.body;
 
@@ -140,14 +140,15 @@ app.post('/api/auth/verify-otp', async (req, res) => {
       return res.status(400).json({ error: 'OTP code has expired (3 min limit). Please request a new code.' });
     }
 
+    // Set is_verified = 1 and auto-set status = 'approved' upon verification
     await db.query(
-      'UPDATE users SET is_verified = 1, otp_code = NULL, otp_expires_at = NULL WHERE email = ?',
+      'UPDATE users SET is_verified = 1, status = "approved", otp_code = NULL, otp_expires_at = NULL WHERE email = ?',
       [email]
     );
 
     res.json({
       success: true,
-      message: 'Email verified successfully! Account submitted for access approval.'
+      message: 'Email verified and account approved successfully! You can now sign in.'
     });
 
   } catch (err) {

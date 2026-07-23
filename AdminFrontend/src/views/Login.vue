@@ -178,8 +178,10 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuth } from '../composables/useAuth.js'; // 👈 Imported useAuth
 
 const router = useRouter();
+const { login } = useAuth(); // 👈 Extracted login function
 const API_BASE = 'http://localhost:5001';
 
 const mode = ref('login');
@@ -215,8 +217,11 @@ const handleLogin = async () => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
 
-    localStorage.setItem('portalUser', JSON.stringify(data.user));
-    router.push('/');
+    // 🟢 Update auth state via composable & store user
+    login(data.user);
+
+    // 🟢 Route to Dashboard
+    await router.push('/');
   } catch (err) {
     errorMsg.value = err.message;
   } finally {
@@ -263,7 +268,7 @@ const handleVerifyOtp = async () => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
 
-    successMsg.value = 'Email verified! Account is awaiting manager approval.';
+    successMsg.value = 'Account verified and activated! You can now sign in.';
     mode.value = 'login';
     step.value = 1;
   } catch (err) {

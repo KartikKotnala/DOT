@@ -3,7 +3,7 @@ import Login from '../views/Login.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Products from '../views/Products.vue';
 import Roles from '../views/Roles.vue';
-import { useAuth } from '../composables/useAuth';
+import { useAuth } from '../composables/useAuth.js';
 
 const routes = [
   {
@@ -36,16 +36,22 @@ const router = createRouter({
   routes
 });
 
-// Protection Guard: Redirect to /login if not authenticated
-router.beforeEach((to, from, next) => {
+// Protection Guard: Modern Vue Router 4 syntax without next()
+router.beforeEach((to, from) => {
   const { isAuthenticated } = useAuth();
+
+  // 1. If route requires auth and user is NOT authenticated -> Redirect to /login
   if (to.meta.requiresAuth && !isAuthenticated.value) {
-    next('/login');
-  } else if (to.path === '/login' && isAuthenticated.value) {
-    next('/');
-  } else {
-    next();
+    return '/login';
+  } 
+  
+  // 2. If user IS authenticated and tries to visit /login -> Redirect to home/dashboard
+  if (to.path === '/login' && isAuthenticated.value) {
+    return '/';
   }
+
+  // 3. Allow navigation to proceed
+  return true;
 });
 
 export default router;
