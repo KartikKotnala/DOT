@@ -3,6 +3,7 @@ import Login from '../views/Login.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Products from '../views/Products.vue';
 import Roles from '../views/Roles.vue';
+import LiveOrders from '@/views/LiveOrders.vue'; // 👈 Match exact file name
 import { useAuth } from '../composables/useAuth.js';
 
 const routes = [
@@ -15,6 +16,12 @@ const routes = [
     path: '/',
     name: 'Dashboard',
     component: Dashboard,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/orders',
+    name: 'LiveOrders',
+    component: LiveOrders, 
     meta: { requiresAuth: true }
   },
   {
@@ -36,21 +43,18 @@ const router = createRouter({
   routes
 });
 
-// Protection Guard: Modern Vue Router 4 syntax without next()
+// Protection Guard
 router.beforeEach((to, from) => {
   const { isAuthenticated } = useAuth();
 
-  // 1. If route requires auth and user is NOT authenticated -> Redirect to /login
   if (to.meta.requiresAuth && !isAuthenticated.value) {
     return '/login';
   } 
   
-  // 2. If user IS authenticated and tries to visit /login -> Redirect to home/dashboard
   if (to.path === '/login' && isAuthenticated.value) {
     return '/';
   }
 
-  // 3. Allow navigation to proceed
   return true;
 });
 

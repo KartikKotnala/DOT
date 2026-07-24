@@ -106,7 +106,7 @@
             @click="handleAddToCartModal(selectedDeviceDetails)"
             class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all duration-200 shadow-md transform active:scale-[0.99] cursor-pointer focus:outline-none flex items-center justify-center gap-2"
           >
-            <span>🛒</span> Add to Cart
+            <span class="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">🛒</span> Add to Cart
           </button>
           <button 
             @click="confirmAndShowRoute"

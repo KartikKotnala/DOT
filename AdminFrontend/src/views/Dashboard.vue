@@ -1,237 +1,307 @@
 <template>
-  <div class="min-h-screen bg-slate-100/70 text-slate-800 font-sans flex antialiased">
+  <div 
+    class="min-h-screen font-sans flex antialiased bg-slate-50 dark:bg-[#090d16] text-slate-800 dark:text-slate-100 transition-colors duration-300"
+  >
     
+    <!-- Sidebar -->
     <Sidebar />
 
     <div class="flex-1 flex flex-col min-w-0">
       
-      <!-- Top Header -->
-      <header class="h-16 bg-white border-b border-slate-200/80 px-8 flex items-center justify-between shrink-0 shadow-sm sticky top-0 z-10">
+      <!-- Top Navigation Header -->
+      <header 
+        class="h-16 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-[#0d1322]/90 px-8 flex items-center justify-between shrink-0 sticky top-0 z-30 backdrop-blur-xl transition-colors duration-300 shadow-xs"
+      >
         <div class="flex items-center gap-3">
-          <h1 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider">
-            Dashboard Overview
-          </h1>
-          <span class="inline-flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2.5 py-1 rounded-full border border-emerald-200">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            Live Feed
-          </span>
+          <div class="p-2 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-500 font-black text-xs">
+            📈
+          </div>
+          <div>
+            <h1 class="text-sm font-black tracking-wider uppercase text-slate-900 dark:text-slate-100">Analytics & Intelligence Hub</h1>
+            <p class="text-[10px] text-slate-400 font-medium -mt-0.5">Real-time Kiosk Network Performance & Telemetry</p>
+          </div>
         </div>
 
-        <div class="flex items-center gap-4 text-slate-500">
+        <div class="flex items-center gap-3">
+          <!-- Sync Data Button -->
           <button 
             @click="fetchOrders" 
             :disabled="isLoading"
-            class="px-3.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 flex items-center gap-2 shadow-xs active:scale-95"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 flex items-center gap-2 shadow-sm active:scale-95"
           >
             <span :class="{ 'animate-spin': isLoading }">🔄</span>
-            <span>{{ isLoading ? 'Refreshing...' : 'Refresh Feed' }}</span>
+            <span>{{ isLoading ? 'Recalculating...' : 'Sync Telemetry' }}</span>
           </button>
         </div>
       </header>
 
-      <!-- Main Dashboard Area -->
-      <main class="p-6 space-y-6 overflow-y-auto">
+      <!-- Main Dashboard Canvas -->
+      <main class="p-6 space-y-6 overflow-y-auto custom-scrollbar">
         
-        <!-- Summary Metric Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- SUMMARY KPI METRICS GRID (6 Key Indicators) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
           
-          <!-- Card 1: Total Revenue -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start text-xs text-slate-400 font-semibold mb-1">
-              <span>Total Revenue</span>
-              <span class="text-slate-300">ⓘ</span>
-            </div>
-            <p class="text-2xl font-black text-slate-900 tracking-tight">₹{{ totalRevenue.toLocaleString() }}</p>
-            
-            <div class="flex items-center gap-2 text-[11px] mt-2 pb-2 border-b border-slate-100">
-              <span class="font-bold" :class="revenueGrowth >= 0 ? 'text-emerald-600' : 'text-rose-600'">
-                {{ revenueGrowth >= 0 ? '▲' : '▼' }} {{ Math.abs(revenueGrowth) }}%
-              </span>
-              <span class="text-slate-400 font-medium">vs prior period</span>
-            </div>
-            
-            <div class="flex justify-between text-[11px] text-slate-500 pt-2 font-medium">
-              <span>Average Order</span>
-              <span class="font-bold text-slate-800">₹{{ averageOrderValue.toLocaleString() }}</span>
+          <!-- Metric 1: Gross Revenue -->
+          <div 
+            class="p-4 rounded-2xl border transition-all bg-white dark:bg-[#0d1322] border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/50 shadow-xs"
+          >
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">Gross Sales</span>
+            <p class="text-xl font-black tracking-tight text-slate-900 dark:text-slate-100">₹{{ totalRevenue.toLocaleString() }}</p>
+            <div class="flex items-center gap-1 mt-1 text-[10px] font-bold" :class="revenueGrowth >= 0 ? 'text-emerald-500' : 'text-rose-500'">
+              <span>{{ revenueGrowth >= 0 ? '▲' : '▼' }} {{ Math.abs(revenueGrowth) }}%</span>
+              <span class="text-slate-400 font-medium">trend</span>
             </div>
           </div>
 
-          <!-- Card 2: Total Orders -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
-            <div>
-              <div class="flex justify-between items-start text-xs text-slate-400 font-semibold mb-1">
-                <span>Total Orders</span>
-                <span class="text-slate-300">ⓘ</span>
+          <!-- Metric 2: Total Volume -->
+          <div 
+            class="p-4 rounded-2xl border transition-all bg-white dark:bg-[#0d1322] border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/50 shadow-xs"
+          >
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">Total Orders</span>
+            <p class="text-xl font-black tracking-tight text-slate-900 dark:text-slate-100">{{ orders.length }}</p>
+            <p class="text-[10px] text-slate-400 font-medium mt-1">{{ uniqueKiosksCount }} Active Kiosks</p>
+          </div>
+
+          <!-- Metric 3: Avg Order Value -->
+          <div 
+            class="p-4 rounded-2xl border transition-all bg-white dark:bg-[#0d1322] border-slate-200/80 dark:border-slate-800/80 hover:border-blue-500/50 shadow-xs"
+          >
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">Avg Ticket</span>
+            <p class="text-xl font-black tracking-tight text-slate-900 dark:text-slate-100">₹{{ averageOrderValue.toLocaleString() }}</p>
+            <p class="text-[10px] text-slate-400 font-medium mt-1">Per Checkout</p>
+          </div>
+
+          <!-- Metric 4: Pending Backlog -->
+          <div 
+            class="p-4 rounded-2xl border transition-all bg-white dark:bg-[#0d1322] border-slate-200/80 dark:border-slate-800/80 hover:border-amber-500/50 shadow-xs"
+          >
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">Queue Backlog</span>
+            <p class="text-xl font-black tracking-tight text-amber-500">{{ pendingOrdersCount }}</p>
+            <p class="text-[10px] text-slate-400 font-medium mt-1">{{ orders.length ? Math.round((pendingOrdersCount / orders.length) * 100) : 0 }}% Backlog</p>
+          </div>
+
+          <!-- Metric 5: Fulfillment Efficiency -->
+          <div 
+            class="p-4 rounded-2xl border transition-all bg-white dark:bg-[#0d1322] border-slate-200/80 dark:border-slate-800/80 hover:border-emerald-500/50 shadow-xs"
+          >
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">Fulfillment Rate</span>
+            <p class="text-xl font-black tracking-tight text-emerald-500">{{ fulfillmentRate }}%</p>
+            <p class="text-[10px] text-slate-400 font-medium mt-1">{{ completedOrdersCount }} Completed</p>
+          </div>
+
+          <!-- Metric 6: Peak Hour Node -->
+          <div 
+            class="p-4 rounded-2xl border transition-all bg-white dark:bg-[#0d1322] border-slate-200/80 dark:border-slate-800/80 hover:border-indigo-500/50 shadow-xs"
+          >
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-400 block mb-1">Peak Hour</span>
+            <p class="text-xl font-black tracking-tight text-indigo-500 dark:text-indigo-400">{{ peakHour }}</p>
+            <p class="text-[10px] text-slate-400 font-medium mt-1">Highest Traffic</p>
+          </div>
+
+        </div>
+
+        <!-- ROW 1 CHARTS: Revenue Vector Curve & Full Lifecycle SVG Pie Chart -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- CHART 1: REVENUE VECTOR GRAPH -->
+          <div 
+            class="lg:col-span-2 rounded-2xl p-6 border flex flex-col justify-between bg-white dark:bg-[#0d1322] border-slate-200/80 dark:border-slate-800/80 shadow-xs"
+          >
+            <div class="flex items-center justify-between border-b pb-4 border-slate-100 dark:border-slate-800">
+              <div>
+                <h2 class="text-base font-extrabold tracking-wide text-slate-900 dark:text-slate-100">Revenue Trajectory Stream</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Sequential sales growth curve across transaction timestamps</p>
               </div>
-              <p class="text-2xl font-black text-slate-900 tracking-tight">{{ orders.length }}</p>
+              <span class="text-xs font-bold text-blue-500 bg-blue-500/10 px-3 py-1 rounded-xl border border-blue-500/20">
+                Vector Plot
+              </span>
             </div>
-            
-            <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-[11px]">
-              <span class="text-slate-500 font-medium">Recorded via Kiosks</span>
-              <span class="font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">{{ orders.length }}</span>
+
+            <!-- SVG Vector Curve Graphic -->
+            <div class="h-64 w-full relative pt-6 pb-2">
+              <svg class="w-full h-full overflow-visible" viewBox="0 0 500 180" preserveAspectRatio="none">
+                <!-- Grid Lines -->
+                <line x1="0" y1="20" x2="500" y2="20" :stroke="isDarkMode ? '#1e293b' : '#f1f5f9'" stroke-width="1" stroke-dasharray="4" />
+                <line x1="0" y1="70" x2="500" y2="70" :stroke="isDarkMode ? '#1e293b' : '#f1f5f9'" stroke-width="1" stroke-dasharray="4" />
+                <line x1="0" y1="120" x2="500" y2="120" :stroke="isDarkMode ? '#1e293b' : '#f1f5f9'" stroke-width="1" stroke-dasharray="4" />
+
+                <defs>
+                  <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.35" />
+                    <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0" />
+                  </linearGradient>
+                </defs>
+
+                <path :d="chartAreaPath" fill="url(#revenueGradient)" />
+                <path :d="chartLinePath" fill="none" stroke="#3b82f6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+                <circle 
+                  v-for="(pt, idx) in chartPoints" 
+                  :key="idx" 
+                  :cx="pt.x" 
+                  :cy="pt.y" 
+                  r="4.5" 
+                  fill="#3b82f6" 
+                  :stroke="isDarkMode ? '#0d1322' : '#ffffff'" 
+                  stroke-width="2" 
+                />
+              </svg>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs text-slate-400 font-medium">
+              <span>Gross Total: <strong class="font-black text-slate-900 dark:text-slate-100">₹{{ totalRevenue.toLocaleString() }}</strong></span>
+              <span class="text-emerald-500 font-bold">● Network Sync Active</span>
             </div>
           </div>
 
-          <!-- Card 3: Pending Orders -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start text-xs text-slate-400 font-semibold mb-1">
-              <span>Pending Fulfillment</span>
-              <span class="text-slate-300">ⓘ</span>
+          <!-- CHART 2: SVG PIE CHART (Order Status Proportion) -->
+          <div 
+            class="rounded-2xl p-6 border flex flex-col justify-between bg-white dark:bg-[#0d1322] border-slate-200/80 dark:border-slate-800/80 shadow-xs"
+          >
+            <div class="border-b pb-4 border-slate-100 dark:border-slate-800">
+              <h2 class="text-base font-extrabold tracking-wide text-slate-900 dark:text-slate-100">Order Status Pie Chart</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Lifecycle state volume ratio</p>
             </div>
-            <p class="text-2xl font-black text-amber-500 tracking-tight">{{ pendingOrdersCount }}</p>
-            
-            <div class="w-full bg-slate-100 rounded-full h-2 my-3 overflow-hidden">
-              <div 
-                class="bg-amber-500 h-full transition-all duration-500 rounded-full" 
-                :style="{ width: orders.length ? `${(pendingOrdersCount / orders.length) * 100}%` : '0%' }"
-              ></div>
-            </div>
-            
-            <div class="flex justify-between text-[11px] text-slate-500 pt-1 font-medium border-t border-slate-100">
-              <span>Requires Action</span>
-              <span class="font-bold text-amber-600">{{ pendingOrdersCount }} orders</span>
-            </div>
-          </div>
 
-          <!-- Card 4: Completed Orders -->
-          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start text-xs text-slate-400 font-semibold mb-1">
-              <span>Completed Orders</span>
-              <span class="text-slate-300">ⓘ</span>
+            <!-- SVG Multi-Segment Pie Chart Visual -->
+            <div class="relative flex items-center justify-center my-4">
+              <svg class="w-48 h-48 -rotate-90 transform overflow-visible" viewBox="-1 -1 2 2">
+                <path 
+                  v-for="(slice, idx) in pieSlices" 
+                  :key="idx"
+                  :d="slice.path" 
+                  :fill="slice.color" 
+                  class="transition-all duration-500 hover:opacity-80 cursor-pointer"
+                />
+              </svg>
+
+              <!-- Central Overlay -->
+              <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                <span class="text-2xl font-black text-slate-900 dark:text-slate-100">{{ orders.length }}</span>
+                <span class="text-[9px] uppercase tracking-wider text-slate-400 font-black">Orders</span>
+              </div>
             </div>
-            <p class="text-2xl font-black text-emerald-600 tracking-tight">{{ completedOrdersCount }}</p>
-            
-            <div class="w-full bg-slate-100 rounded-full h-2 my-3 overflow-hidden">
-              <div 
-                class="bg-emerald-500 h-full transition-all duration-500 rounded-full" 
-                :style="{ width: orders.length ? `${(completedOrdersCount / orders.length) * 100}%` : '0%' }"
-              ></div>
-            </div>
-            
-            <div class="flex justify-between text-[11px] text-slate-500 pt-1 font-medium border-t border-slate-100">
-              <span>Fulfillment Rate</span>
-              <span class="font-bold text-emerald-600">{{ fulfillmentRate }}%</span>
+
+            <!-- Pie Legend Grid -->
+            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div v-for="item in statusBreakdown" :key="item.name" class="flex items-center justify-between text-xs">
+                <span class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-medium">
+                  <span class="w-2.5 h-2.5 rounded-full" :style="{ backgroundColor: item.color }"></span>
+                  {{ item.name }}
+                </span>
+                <span class="font-black text-slate-900 dark:text-slate-100">{{ item.percentage }}%</span>
+              </div>
             </div>
           </div>
 
         </div>
 
-        <!-- Orders Table / Grid Section -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs">
+        <!-- ROW 2 CHARTS: Payment Radial Donut & Kiosk Volume Load -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 gap-4 mb-6">
-            <div>
-              <h2 class="text-base font-bold text-slate-900">Live Kiosk Orders</h2>
-              <p class="text-xs text-slate-400">View and update customer order states in real time</p>
+          <!-- CHART 3: RADIAL DONUT (Payment Methods Split) -->
+          <div 
+            class="rounded-2xl p-6 border flex flex-col justify-between bg-white dark:bg-[#0d1322] border-slate-200/80 dark:border-slate-800/80 shadow-xs"
+          >
+            <div class="border-b pb-4 border-slate-100 dark:border-slate-800">
+              <h2 class="text-base font-extrabold tracking-wide text-slate-900 dark:text-slate-100">Payment Method Distribution</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Checkout method breakdown across customers</p>
             </div>
 
-            <div class="flex flex-wrap gap-1.5 bg-slate-100/80 p-1 rounded-xl border border-slate-200/60">
-              <button 
-                v-for="st in ['All', 'Pending', 'Processing', 'Completed', 'Cancelled']" 
-                :key="st"
-                @click="selectedFilter = st"
-                class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer"
-                :class="selectedFilter === st ? 'bg-white text-blue-600 shadow-xs border border-slate-200/60' : 'text-slate-600 hover:text-slate-900'"
-              >
-                {{ st }}
-              </button>
-            </div>
-          </div>
-
-          <!-- Empty State -->
-          <div v-if="filteredOrders.length === 0" class="text-center py-16 text-slate-400 text-xs bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
-            No active orders matching "<span class="font-semibold text-slate-600">{{ selectedFilter }}</span>" status.
-          </div>
-
-          <!-- Orders Cards Grid -->
-          <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div 
-              v-for="order in filteredOrders" 
-              :key="order.id"
-              class="border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between gap-4 bg-white hover:border-blue-300 transition-all shadow-xs hover:shadow-sm"
-            >
-              <div class="flex justify-between items-start border-b border-slate-100 pb-3">
-                <div>
-                  <span class="font-extrabold text-slate-900 text-sm tracking-tight">{{ order.orderCode }}</span>
-                  <p class="text-[10px] font-medium text-slate-400 mt-0.5">
-                    {{ formatDate(order.createdAt) }} • Kiosk: <span class="font-semibold text-slate-600">{{ order.kioskId }}</span>
-                  </p>
-                </div>
-                <span 
-                  class="text-[10px] font-bold uppercase px-2.5 py-1 rounded-full border inline-flex items-center gap-1.5"
-                  :class="{
-                    'bg-amber-50 text-amber-700 border-amber-200': order.status === 'Pending',
-                    'bg-blue-50 text-blue-700 border-blue-200': order.status === 'Processing',
-                    'bg-emerald-50 text-emerald-700 border-emerald-200': order.status === 'Completed',
-                    'bg-rose-50 text-rose-700 border-rose-200': order.status === 'Cancelled'
-                  }"
-                >
-                  <span 
-                    class="w-1.5 h-1.5 rounded-full"
-                    :class="{
-                      'bg-amber-500': order.status === 'Pending',
-                      'bg-blue-500': order.status === 'Processing',
-                      'bg-emerald-500': order.status === 'Completed',
-                      'bg-rose-500': order.status === 'Cancelled'
-                    }"
-                  ></span>
-                  {{ order.status }}
-                </span>
-              </div>
-
-              <!-- Customer Details -->
-              <div class="grid grid-cols-3 gap-2 text-[11px] bg-slate-50 p-3 rounded-xl border border-slate-100">
-                <div>
-                  <span class="text-[9px] text-slate-400 block uppercase font-bold tracking-wider">Customer</span>
-                  <span class="font-bold text-slate-800 truncate block">{{ order.customerName }}</span>
-                </div>
-                <div>
-                  <span class="text-[9px] text-slate-400 block uppercase font-bold tracking-wider">Phone</span>
-                  <span class="font-bold text-slate-800 block truncate">{{ order.customerPhone }}</span>
-                </div>
-                <div>
-                  <span class="text-[9px] text-slate-400 block uppercase font-bold tracking-wider">Payment</span>
-                  <span class="font-bold text-blue-600 uppercase block">{{ order.paymentMethod }}</span>
+            <div class="flex flex-col sm:flex-row items-center justify-around my-4 gap-4">
+              <div class="relative flex items-center justify-center">
+                <svg class="w-40 h-40 -rotate-90 transform overflow-visible" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15.915" fill="none" :stroke="isDarkMode ? '#1e293b' : '#f1f5f9'" stroke-width="3.5" />
+                  <circle 
+                    v-for="(seg, idx) in donutSegments" 
+                    :key="idx"
+                    cx="18" cy="18" r="15.915" 
+                    fill="none" 
+                    :stroke="seg.color" 
+                    stroke-width="3.8"
+                    :stroke-dasharray="`${seg.dash} ${100 - seg.dash}`"
+                    :stroke-dashoffset="seg.offset"
+                    class="transition-all duration-700"
+                  />
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                  <span class="text-xl font-black text-slate-900 dark:text-slate-100">₹{{ totalRevenue.toLocaleString() }}</span>
+                  <span class="text-[8px] uppercase tracking-wider text-slate-400 font-extrabold">Revenue</span>
                 </div>
               </div>
 
-              <!-- Ordered Items List -->
-              <div class="space-y-1.5 my-1">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Ordered Items:</span>
+              <div class="space-y-3 w-full sm:w-1/2">
                 <div 
-                  v-for="item in order.items" 
-                  :key="item.id" 
-                  class="flex justify-between text-xs text-slate-700 bg-slate-50/50 px-3 py-1.5 rounded-lg border border-slate-100"
+                  v-for="item in paymentBreakdown" 
+                  :key="item.name" 
+                  class="p-2.5 rounded-xl border flex items-center justify-between bg-slate-50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800"
                 >
-                  <span class="font-medium truncate pr-2">{{ item.quantity }}x {{ item.productName || item.productId }}</span>
-                  <span class="font-bold text-slate-900 shrink-0">₹{{ (item.price * item.quantity).toLocaleString() }}</span>
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full" :style="{ backgroundColor: item.color }"></span>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200">{{ item.name }}</span>
+                  </div>
+                  <span class="text-xs font-black text-blue-500">{{ item.percentage }}%</span>
                 </div>
               </div>
+            </div>
 
-              <!-- Total & Action Buttons -->
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-t border-slate-100 pt-3 gap-3">
-                <div>
-                  <span class="text-[9px] text-slate-400 uppercase font-bold block tracking-wider">Total Amount</span>
-                  <span class="text-base font-black text-emerald-600">₹{{ Number(order.grandTotal).toLocaleString() }}</span>
-                </div>
-
-                <div class="flex gap-1 overflow-x-auto pb-1 sm:pb-0">
-                  <button 
-                    v-for="stOpt in ['Pending', 'Processing', 'Completed', 'Cancelled']" 
-                    :key="stOpt"
-                    @click="updateOrderStatus(order.id, stOpt)"
-                    :disabled="order.status === stOpt"
-                    class="px-2.5 py-1 text-[10px] font-bold rounded-lg border transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs"
-                    :class="order.status === stOpt ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100 hover:text-slate-900'"
-                  >
-                    {{ stOpt }}
-                  </button>
-                </div>
-              </div>
-
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-400 font-medium text-center">
+              Channels: UPI, Cash & POS Integrated
             </div>
           </div>
 
+          <!-- CHART 4: KIOSK HARDWARE LOAD BARS -->
+          <div 
+            class="rounded-2xl p-6 border flex flex-col justify-between bg-white dark:bg-[#0d1322] border-slate-200/80 dark:border-slate-800/80 shadow-xs"
+          >
+            <div class="border-b pb-4 mb-4 border-slate-100 dark:border-slate-800">
+              <h2 class="text-base font-extrabold tracking-wide text-slate-900 dark:text-slate-100">Kiosk Throughput Load</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Order distribution across physical kiosk hardware</p>
+            </div>
+
+            <div class="space-y-3.5 my-2">
+              <div v-for="kiosk in kioskLoadBreakdown" :key="kiosk.id" class="space-y-1">
+                <div class="flex justify-between text-xs font-bold">
+                  <span class="text-slate-700 dark:text-slate-300">Kiosk Node #{{ kiosk.id }}</span>
+                  <span class="text-blue-500 font-black">{{ kiosk.count }} Orders ({{ kiosk.percentage }}%)</span>
+                </div>
+                <div class="w-full rounded-full h-3 overflow-hidden bg-slate-100 dark:bg-slate-900">
+                  <div 
+                    class="h-full bg-gradient-to-r from-blue-600 to-indigo-500 rounded-full transition-all duration-700" 
+                    :style="{ width: `${kiosk.percentage}%` }"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs text-slate-400">
+              <span>Active Kiosk Nodes: <strong class="text-slate-900 dark:text-slate-100">{{ uniqueKiosksCount }}</strong></span>
+              <span class="text-emerald-500 font-bold">● Network Online</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- QUICK ACCESS BANNER -->
+        <div 
+          class="p-6 rounded-2xl border shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-blue-900 via-slate-800 to-blue-900 dark:from-blue-950/40 dark:via-[#0d1322] dark:to-indigo-950/40 text-white border-blue-200/60 dark:border-blue-500/20"
+        >
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-600/30 rounded-2xl flex items-center justify-center text-2xl shrink-0 border border-blue-400/30">
+              📦
+            </div>
+            <div>
+              <h3 class="text-base font-bold">Live Order Management Station</h3>
+              <p class="text-xs text-slate-300 mt-0.5">Need to process incoming orders, update fulfillment states, or inspect customer receipts?</p>
+            </div>
+          </div>
+
+          <router-link 
+            to="/orders" 
+            class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition-all shadow-md active:scale-95 whitespace-nowrap shrink-0"
+          >
+            Go to Live Orders ➔
+          </router-link>
         </div>
 
       </main>
@@ -242,99 +312,177 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import Sidebar from '../components/layout/Sidebar.vue';
+import Sidebar from '@/components/layout/Sidebar.vue';
+import { useTheme } from '@/composables/useTheme';
 
 const orders = ref([]);
-const selectedFilter = ref('All');
 const isLoading = ref(false);
+const { isDarkMode } = useTheme(); // Global theme state
 let autoRefreshTimer = null;
 
-// Fetch Live Orders from Express Backend
 const fetchOrders = async () => {
   isLoading.value = true;
   try {
     const res = await fetch('http://localhost:5001/api/admin/orders');
     orders.value = await res.json();
   } catch (err) {
-    console.error('Failed to fetch orders:', err);
+    console.error('Failed to fetch analytics:', err);
   } finally {
     isLoading.value = false;
   }
 };
 
-// Update Order Status in Express API & MySQL
-const updateOrderStatus = async (orderId, newStatus) => {
-  try {
-    const res = await fetch(`http://localhost:5001/api/admin/orders/${orderId}/status`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus })
-    });
-    const data = await res.json();
-    if (data.success) {
-      const order = orders.value.find(o => o.id === orderId);
-      if (order) order.status = newStatus;
+// Summary Metric Calculations
+const totalRevenue = computed(() => orders.value.reduce((acc, o) => acc + Number(o.grandTotal || 0), 0));
+const averageOrderValue = computed(() => orders.value.length ? Math.round(totalRevenue.value / orders.value.length) : 0);
+const pendingOrdersCount = computed(() => orders.value.filter(o => o.status === 'Pending').length);
+const completedOrdersCount = computed(() => orders.value.filter(o => o.status === 'Completed').length);
+const fulfillmentRate = computed(() => orders.value.length ? Math.round((completedOrdersCount.value / orders.value.length) * 100) : 0);
+const uniqueKiosksCount = computed(() => new Set(orders.value.map(o => o.kioskId).filter(Boolean)).size || 1);
+
+// Peak Operational Hour Analysis
+const peakHour = computed(() => {
+  if (!orders.value.length) return 'N/A';
+  const hourCounts = {};
+  orders.value.forEach(o => {
+    if (o.createdAt) {
+      const hour = new Date(o.createdAt).getHours();
+      hourCounts[hour] = (hourCounts[hour] || 0) + 1;
     }
-  } catch (err) {
-    console.error('Failed to update status:', err);
-  }
-};
-
-// Format Date safely
-const formatDate = (dateStr) => {
-  if (!dateStr) return 'N/A';
-  return new Date(dateStr).toLocaleString('en-IN', {
-    dateStyle: 'short',
-    timeStyle: 'short'
   });
-};
-
-// Dynamic Financial Metrics
-const filteredOrders = computed(() => {
-  if (selectedFilter.value === 'All') return orders.value;
-  return orders.value.filter(o => o.status === selectedFilter.value);
+  const maxHour = Object.keys(hourCounts).reduce((a, b) => hourCounts[a] > hourCounts[b] ? a : b, '12');
+  return `${maxHour}:00 - ${Number(maxHour) + 1}:00`;
 });
 
-const totalRevenue = computed(() => {
-  return orders.value.reduce((acc, o) => acc + Number(o.grandTotal || 0), 0);
-});
-
-const averageOrderValue = computed(() => {
-  if (!orders.value.length) return 0;
-  return Math.round(totalRevenue.value / orders.value.length);
-});
-
-const pendingOrdersCount = computed(() => {
-  return orders.value.filter(o => o.status === 'Pending').length;
-});
-
-const completedOrdersCount = computed(() => {
-  return orders.value.filter(o => o.status === 'Completed').length;
-});
-
-const fulfillmentRate = computed(() => {
-  if (!orders.value.length) return 0;
-  return Math.round((completedOrdersCount.value / orders.value.length) * 100);
-});
-
-// Dynamic Revenue Growth Calculation
-// Splitting dataset by median timestamp to compare recent vs prior revenue
 const revenueGrowth = computed(() => {
   if (orders.value.length < 2) return 0;
+  const sorted = [...orders.value].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const mid = Math.floor(sorted.length / 2);
+  const prior = sorted.slice(0, mid).reduce((acc, o) => acc + Number(o.grandTotal || 0), 0);
+  const curr = sorted.slice(mid).reduce((acc, o) => acc + Number(o.grandTotal || 0), 0);
+  if (prior === 0) return curr > 0 ? 100 : 0;
+  return Number((((curr - prior) / prior) * 100).toFixed(1));
+});
 
-  const sortedOrders = [...orders.value].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-  const midpoint = Math.floor(sortedOrders.length / 2);
+// SVG Line Chart Calculation Points
+const chartPoints = computed(() => {
+  if (!orders.value.length) return [];
+  const sorted = [...orders.value].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const maxRevenue = Math.max(...sorted.map(o => Number(o.grandTotal || 0)), 100);
 
-  const priorPeriod = sortedOrders.slice(0, midpoint);
-  const currentPeriod = sortedOrders.slice(midpoint);
+  return sorted.map((o, idx) => ({
+    x: (idx / Math.max(sorted.length - 1, 1)) * 480 + 10,
+    y: 160 - (Number(o.grandTotal || 0) / maxRevenue) * 130
+  }));
+});
 
-  const priorRevenue = priorPeriod.reduce((acc, o) => acc + Number(o.grandTotal || 0), 0);
-  const currentRevenue = currentPeriod.reduce((acc, o) => acc + Number(o.grandTotal || 0), 0);
+const chartLinePath = computed(() => {
+  if (!chartPoints.value.length) return '';
+  return chartPoints.value.reduce((acc, pt, idx) => idx === 0 ? `M ${pt.x} ${pt.y}` : `${acc} L ${pt.x} ${pt.y}`, '');
+});
 
-  if (priorRevenue === 0) return currentRevenue > 0 ? 100 : 0;
+const chartAreaPath = computed(() => {
+  if (!chartPoints.value.length) return '';
+  const line = chartLinePath.value;
+  const lastX = chartPoints.value[chartPoints.value.length - 1].x;
+  const firstX = chartPoints.value[0].x;
+  return `${line} L ${lastX} 170 L ${firstX} 170 Z`;
+});
 
-  const growth = ((currentRevenue - priorRevenue) / priorRevenue) * 100;
-  return Number(growth.toFixed(1));
+// Status Distribution Breakdown
+const statusBreakdown = computed(() => {
+  const total = orders.value.length || 1;
+  const counts = {
+    Pending: orders.value.filter(o => o.status === 'Pending').length,
+    Processing: orders.value.filter(o => o.status === 'Processing').length,
+    Completed: orders.value.filter(o => o.status === 'Completed').length,
+    Cancelled: orders.value.filter(o => o.status === 'Cancelled').length,
+  };
+
+  return [
+    { name: 'Pending', count: counts.Pending, percentage: Math.round((counts.Pending / total) * 100), color: '#f59e0b' },
+    { name: 'Processing', count: counts.Processing, percentage: Math.round((counts.Processing / total) * 100), color: '#3b82f6' },
+    { name: 'Completed', count: counts.Completed, percentage: Math.round((counts.Completed / total) * 100), color: '#10b981' },
+    { name: 'Cancelled', count: counts.Cancelled, percentage: Math.round((counts.Cancelled / total) * 100), color: '#f43f5e' },
+  ];
+});
+
+// Dynamic SVG Pie Chart Path Generator
+const pieSlices = computed(() => {
+  let cumulativePercent = 0;
+  return statusBreakdown.value.map(item => {
+    const percent = item.percentage / 100;
+    
+    // Handle edge case where single status is 100%
+    if (percent >= 0.999) {
+      return { 
+        path: 'M 0 -1 A 1 1 0 1 1 0 1 A 1 1 0 1 1 0 -1 Z', 
+        color: item.color 
+      };
+    }
+    
+    if (percent <= 0) return { path: '', color: item.color };
+
+    const [startX, startY] = getCoordinatesForPercent(cumulativePercent);
+    cumulativePercent += percent;
+    const [endX, endY] = getCoordinatesForPercent(cumulativePercent);
+    const largeArcFlag = percent > 0.5 ? 1 : 0;
+
+    const pathData = [
+      `M ${startX} ${startY}`,
+      `A 1 1 0 ${largeArcFlag} 1 ${endX} ${endY}`,
+      `L 0 0`,
+    ].join(' ');
+
+    return { path: pathData, color: item.color };
+  });
+});
+
+function getCoordinatesForPercent(percent) {
+  const x = Math.cos(2 * Math.PI * percent);
+  const y = Math.sin(2 * Math.PI * percent);
+  return [x, y];
+}
+
+// Payment Method Radial Donut
+const paymentBreakdown = computed(() => {
+  const total = orders.value.length || 1;
+  const counts = {
+    upi: orders.value.filter(o => o.paymentMethod?.toLowerCase() === 'upi').length,
+    cash: orders.value.filter(o => o.paymentMethod?.toLowerCase() === 'cash').length,
+    card: orders.value.filter(o => o.paymentMethod?.toLowerCase() === 'card').length,
+  };
+
+  return [
+    { name: 'UPI / QR', percentage: Math.round((counts.upi / total) * 100), color: '#3b82f6' },
+    { name: 'Cash', percentage: Math.round((counts.cash / total) * 100), color: '#10b981' },
+    { name: 'Card / POS', percentage: Math.round((counts.card / total) * 100), color: '#f59e0b' },
+  ];
+});
+
+const donutSegments = computed(() => {
+  let offset = 0;
+  return paymentBreakdown.value.map(item => {
+    const dash = item.percentage;
+    const currentOffset = offset;
+    offset -= dash;
+    return { dash, offset: currentOffset, color: item.color };
+  });
+});
+
+// Kiosk Load Breakdown
+const kioskLoadBreakdown = computed(() => {
+  const total = orders.value.length || 1;
+  const map = {};
+  orders.value.forEach(o => {
+    const kId = o.kioskId || '1';
+    map[kId] = (map[kId] || 0) + 1;
+  });
+  return Object.keys(map).map(id => ({
+    id,
+    count: map[id],
+    percentage: Math.round((map[id] / total) * 100)
+  }));
 });
 
 onMounted(() => {
@@ -346,3 +494,13 @@ onUnmounted(() => {
   if (autoRefreshTimer) clearInterval(autoRefreshTimer);
 });
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.2);
+  border-radius: 9999px;
+}
+</style>

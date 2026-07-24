@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
+/* Tells Tailwind v4 to trigger dark: utility classes when .dark is on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
 body {
   margin: 0;
-  background-color: #020617;
-  color: #f8fafc;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }

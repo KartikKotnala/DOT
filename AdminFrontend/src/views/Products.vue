@@ -1,53 +1,63 @@
 <template>
-  <div class="min-h-screen bg-[#f0f2f5] text-slate-800 font-sans flex">
+  <div class="min-h-screen font-sans flex antialiased bg-slate-50 dark:bg-[#090d16] text-slate-800 dark:text-slate-100 transition-colors duration-300">
     
+    <!-- Sidebar -->
     <Sidebar />
 
     <div class="flex-1 flex flex-col min-w-0">
       
       <!-- Top Header -->
-      <header class="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between shrink-0 shadow-sm">
-        <h1 class="text-sm font-bold text-slate-700 uppercase tracking-wider">
+      <header class="h-16 border-b border-slate-200/80 dark:border-slate-800/80 bg-white/90 dark:bg-[#0d1322]/90 px-8 flex items-center justify-between shrink-0 sticky top-0 z-30 backdrop-blur-xl transition-colors duration-300 shadow-xs">
+        <h1 class="text-sm font-black uppercase tracking-wider text-slate-900 dark:text-slate-100">
           Catalog Management
         </h1>
 
         <div class="flex items-center gap-2">
-          <button @click="openModal('category')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-all cursor-pointer">
+          <button 
+            @click="openModal('category')" 
+            class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-xs"
+          >
             + Add Category
           </button>
-          <button @click="openModal('brand')" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer">
+          <button 
+            @click="openModal('brand')" 
+            class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-xs"
+          >
             + Add Brand
           </button>
-          <button @click="openModal('subProduct')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer">
+          <button 
+            @click="openModal('subProduct')" 
+            class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all cursor-pointer active:scale-95 shadow-xs"
+          >
             + Add Sub-Product
           </button>
         </div>
       </header>
 
       <!-- Main Container -->
-      <main class="p-6 space-y-6 overflow-y-auto">
+      <main class="p-6 space-y-6 overflow-y-auto custom-scrollbar">
         
         <!-- Tab & Search Bar -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-3">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-slate-800/80 pb-3">
           <div class="flex gap-4">
             <button 
               @click="activeTab = 'categories'"
               class="text-xs font-bold pb-1 transition-all cursor-pointer"
-              :class="activeTab === 'categories' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-slate-400 hover:text-slate-700'"
+              :class="activeTab === 'categories' ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
             >
               📂 Categories ({{ categories.length }})
             </button>
             <button 
               @click="activeTab = 'brands'"
               class="text-xs font-bold pb-1 transition-all cursor-pointer"
-              :class="activeTab === 'brands' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-slate-400 hover:text-slate-700'"
+              :class="activeTab === 'brands' ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
             >
               🏷️ Brands ({{ brands.length }})
             </button>
             <button 
               @click="activeTab = 'subProducts'"
               class="text-xs font-bold pb-1 transition-all cursor-pointer"
-              :class="activeTab === 'subProducts' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-slate-400 hover:text-slate-700'"
+              :class="activeTab === 'subProducts' ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'"
             >
               📱 Sub-Products ({{ subProducts.length }})
             </button>
@@ -58,31 +68,35 @@
             v-model="searchQuery" 
             type="text" 
             placeholder="Search items..." 
-            class="bg-white border border-slate-200 text-xs rounded-xl px-3 py-1.5 w-full md:w-64 focus:outline-none focus:border-blue-500"
+            class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 text-xs rounded-xl px-3 py-1.5 w-full md:w-64 focus:outline-none focus:border-blue-500"
           />
         </div>
 
-        <!-- Loading / Empty State -->
+        <!-- Loading State -->
         <div v-if="loading" class="text-center py-12 text-slate-400 text-xs font-bold">
           Loading catalog from database...
         </div>
 
         <!-- TAB 1: CATEGORIES -->
         <div v-else-if="activeTab === 'categories'">
-          <div v-if="filteredCategories.length === 0" class="text-center py-8 text-slate-400 text-xs">
+          <div v-if="filteredCategories.length === 0" class="text-center py-8 text-slate-400 text-xs bg-slate-50/50 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
             No categories found in database. Click "+ Add Category" to create one.
           </div>
           <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div v-for="cat in filteredCategories" :key="cat.id" class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+            <div 
+              v-for="cat in filteredCategories" 
+              :key="cat.id" 
+              class="bg-white dark:bg-[#0d1322] border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex flex-col justify-between"
+            >
               <div>
                 <span class="text-[10px] font-mono font-bold text-slate-400 block uppercase">ID: {{ cat.id }}</span>
-                <h3 class="font-bold text-slate-800 text-sm mt-1">{{ cat.name }}</h3>
-                <p class="text-xs text-slate-500 mt-2">{{ cat.description || 'No description provided.' }}</p>
+                <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm mt-1">{{ cat.name }}</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">{{ cat.description || 'No description provided.' }}</p>
               </div>
               
-              <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-slate-100">
-                <button @click="openModal('category', cat)" class="px-2.5 py-1 text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold rounded-lg transition-all cursor-pointer">✏️ Edit</button>
-                <button @click="deleteItem('categories', cat.id)" class="px-2.5 py-1 text-xs bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg transition-all cursor-pointer">🗑️ Delete</button>
+              <div class="flex justify-end gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <button @click="openModal('category', cat)" class="px-2.5 py-1 text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold rounded-lg transition-all cursor-pointer border border-amber-500/20">✏️ Edit</button>
+                <button @click="deleteItem('categories', cat.id)" class="px-2.5 py-1 text-xs bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-bold rounded-lg transition-all cursor-pointer border border-rose-500/20">🗑️ Delete</button>
               </div>
             </div>
           </div>
@@ -90,24 +104,28 @@
 
         <!-- TAB 2: BRANDS -->
         <div v-else-if="activeTab === 'brands'">
-          <div v-if="filteredBrands.length === 0" class="text-center py-8 text-slate-400 text-xs">
+          <div v-if="filteredBrands.length === 0" class="text-center py-8 text-slate-400 text-xs bg-slate-50/50 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
             No brands found in database. Click "+ Add Brand" to create one.
           </div>
           <div v-else class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div v-for="b in filteredBrands" :key="b.id" class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm text-center flex flex-col items-center justify-between gap-3">
+            <div 
+              v-for="b in filteredBrands" 
+              :key="b.id" 
+              class="bg-white dark:bg-[#0d1322] border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs text-center flex flex-col items-center justify-between gap-3"
+            >
               <div class="flex flex-col items-center gap-2">
-                <div class="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center overflow-hidden p-2 border border-slate-100">
+                <div class="w-16 h-16 bg-slate-50 dark:bg-slate-900 rounded-xl flex items-center justify-center overflow-hidden p-2 border border-slate-100 dark:border-slate-800">
                   <img :src="getImageUrl(b.image)" :alt="b.name" class="max-h-full max-w-full object-contain" @error="onImageError" />
                 </div>
                 <div>
                   <span class="text-[9px] font-mono text-slate-400 block">Brand ID: {{ b.id }}</span>
-                  <h4 class="font-bold text-slate-800 text-sm">{{ b.name }}</h4>
+                  <h4 class="font-bold text-slate-900 dark:text-slate-100 text-sm">{{ b.name }}</h4>
                 </div>
               </div>
 
-              <div class="flex gap-2 w-full pt-2 border-t border-slate-100 justify-center">
-                <button @click="openModal('brand', b)" class="px-2 py-1 text-[11px] bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold rounded-lg transition-all cursor-pointer">✏️ Edit</button>
-                <button @click="deleteItem('brands', b.id)" class="px-2 py-1 text-[11px] bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg transition-all cursor-pointer">🗑️ Delete</button>
+              <div class="flex gap-2 w-full pt-2 border-t border-slate-100 dark:border-slate-800 justify-center">
+                <button @click="openModal('brand', b)" class="px-2 py-1 text-[11px] bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold rounded-lg transition-all cursor-pointer border border-amber-500/20">✏️ Edit</button>
+                <button @click="deleteItem('brands', b.id)" class="px-2 py-1 text-[11px] bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-bold rounded-lg transition-all cursor-pointer border border-rose-500/20">🗑️ Delete</button>
               </div>
             </div>
           </div>
@@ -115,39 +133,43 @@
 
         <!-- TAB 3: SUB-PRODUCTS -->
         <div v-else-if="activeTab === 'subProducts'">
-          <div v-if="filteredSubProducts.length === 0" class="text-center py-8 text-slate-400 text-xs">
+          <div v-if="filteredSubProducts.length === 0" class="text-center py-8 text-slate-400 text-xs bg-slate-50/50 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
             No products found in database. Click "+ Add Sub-Product" to create one.
           </div>
           <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div v-for="prod in filteredSubProducts" :key="prod.id" class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between gap-4">
+            <div 
+              v-for="prod in filteredSubProducts" 
+              :key="prod.id" 
+              class="bg-white dark:bg-[#0d1322] border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex flex-col justify-between gap-4"
+            >
               <div>
-                <div class="w-full h-36 bg-slate-50 border border-slate-100 rounded-xl mb-3 flex items-center justify-center overflow-hidden p-2">
+                <div class="w-full h-36 bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl mb-3 flex items-center justify-center overflow-hidden p-2">
                   <img :src="getImageUrl(prod.image)" :alt="prod.name" class="max-h-full max-w-full object-contain" @error="onImageError" />
                 </div>
 
                 <div class="flex justify-between items-start mb-1">
-                  <span class="text-[10px] uppercase font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                  <span class="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-500/20">
                     Floor {{ prod.floor }}
                   </span>
-                  <span class="text-xs font-black text-emerald-600">₹{{ prod.price?.toLocaleString() }}</span>
+                  <span class="text-xs font-black text-emerald-600 dark:text-emerald-400">₹{{ prod.price?.toLocaleString() }}</span>
                 </div>
 
-                <h3 class="font-bold text-slate-800 text-sm">{{ prod.name }}</h3>
+                <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm">{{ prod.name }}</h3>
                 <p class="text-[11px] font-mono text-slate-400 mt-0.5">
                   {{ prod.storage ? prod.storage : '' }} {{ prod.ram ? '| RAM: ' + prod.ram : '' }}
                 </p>
-                <p class="text-xs text-slate-500 mt-2 line-clamp-2">{{ prod.description }}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 line-clamp-2">{{ prod.description }}</p>
               </div>
 
               <div>
-                <div class="text-[10px] bg-slate-50 p-2 rounded-lg border border-slate-100 text-slate-500 font-mono flex justify-between mb-3">
+                <div class="text-[10px] bg-slate-50 dark:bg-slate-900 p-2 rounded-lg border border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-mono flex justify-between mb-3">
                   <span>Brand: {{ prod.brandId }}</span>
                   <span>Map: ({{ prod.mapX }}, {{ prod.mapY }})</span>
                 </div>
 
-                <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
-                  <button @click="openModal('subProduct', prod)" class="px-2.5 py-1 text-xs bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold rounded-lg transition-all cursor-pointer">✏️ Edit</button>
-                  <button @click="deleteItem('products', prod.id)" class="px-2.5 py-1 text-xs bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold rounded-lg transition-all cursor-pointer">🗑️ Delete</button>
+                <div class="flex justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <button @click="openModal('subProduct', prod)" class="px-2.5 py-1 text-xs bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold rounded-lg transition-all cursor-pointer border border-amber-500/20">✏️ Edit</button>
+                  <button @click="deleteItem('products', prod.id)" class="px-2.5 py-1 text-xs bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-bold rounded-lg transition-all cursor-pointer border border-rose-500/20">🗑️ Delete</button>
                 </div>
               </div>
             </div>
@@ -158,29 +180,29 @@
 
       <!-- CATEGORY MODAL -->
       <div v-if="modalType === 'category'" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white text-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4">
-          <div class="flex justify-between items-center border-b pb-3">
-            <h3 class="font-bold text-sm uppercase">{{ isEditing ? 'Edit Category' : 'Add Category' }}</h3>
-            <button @click="closeModal" class="text-slate-400 hover:text-slate-700 text-sm font-bold">✕</button>
+        <div class="bg-white dark:bg-[#0d1322] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 class="font-bold text-sm uppercase text-slate-900 dark:text-slate-100">{{ isEditing ? 'Edit Category' : 'Add Category' }}</h3>
+            <button @click="closeModal" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-bold">✕</button>
           </div>
 
           <form @submit.prevent="submitCategory" class="space-y-3 text-xs">
             <div>
-              <label class="block font-bold text-slate-600 mb-1">Category ID *</label>
-              <input v-model="categoryForm.id" :disabled="isEditing" required type="text" placeholder="e.g. 1" class="w-full bg-slate-50 border rounded-xl p-2.5 disabled:bg-slate-200" />
+              <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Category ID *</label>
+              <input v-model="categoryForm.id" :disabled="isEditing" required type="text" placeholder="e.g. 1" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5 disabled:opacity-50" />
             </div>
 
             <div>
-              <label class="block font-bold text-slate-600 mb-1">Category Name *</label>
-              <input v-model="categoryForm.name" required type="text" placeholder="e.g. Mobile Phones" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+              <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Category Name *</label>
+              <input v-model="categoryForm.name" required type="text" placeholder="e.g. Mobile Phones" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
             </div>
 
             <div>
-              <label class="block font-bold text-slate-600 mb-1">Description</label>
-              <textarea v-model="categoryForm.description" placeholder="e.g. Mobile devices and smart handhelds" class="w-full bg-slate-50 border rounded-xl p-2.5 h-20 resize-none"></textarea>
+              <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Description</label>
+              <textarea v-model="categoryForm.description" placeholder="e.g. Mobile devices and smart handhelds" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5 h-20 resize-none"></textarea>
             </div>
 
-            <button type="submit" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl uppercase transition-all cursor-pointer">
+            <button type="submit" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold rounded-xl uppercase transition-all cursor-pointer">
               {{ isEditing ? 'Update Category' : 'Save Category' }}
             </button>
           </form>
@@ -189,38 +211,38 @@
 
       <!-- BRAND MODAL -->
       <div v-if="modalType === 'brand'" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white text-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4">
-          <div class="flex justify-between items-center border-b pb-3">
-            <h3 class="font-bold text-sm uppercase">{{ isEditing ? 'Edit Brand' : 'Add Brand' }}</h3>
-            <button @click="closeModal" class="text-slate-400 hover:text-slate-700 text-sm font-bold">✕</button>
+        <div class="bg-white dark:bg-[#0d1322] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 class="font-bold text-sm uppercase text-slate-900 dark:text-slate-100">{{ isEditing ? 'Edit Brand' : 'Add Brand' }}</h3>
+            <button @click="closeModal" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-bold">✕</button>
           </div>
 
           <form @submit.prevent="submitBrand" class="space-y-3 text-xs">
             <div>
-              <label class="block font-bold text-slate-600 mb-1">Brand ID *</label>
-              <input v-model="brandForm.id" :disabled="isEditing" required type="text" placeholder="e.g. b3" class="w-full bg-slate-50 border rounded-xl p-2.5 disabled:bg-slate-200" />
+              <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Brand ID *</label>
+              <input v-model="brandForm.id" :disabled="isEditing" required type="text" placeholder="e.g. b3" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5 disabled:opacity-50" />
             </div>
 
             <div>
-              <label class="block font-bold text-slate-600 mb-1">Category ID *</label>
-              <input v-model="brandForm.ProductsNamesid" required type="text" placeholder="e.g. 1 (for Phone)" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+              <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Category ID *</label>
+              <input v-model="brandForm.ProductsNamesid" required type="text" placeholder="e.g. 1 (for Phone)" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
             </div>
 
             <div>
-              <label class="block font-bold text-slate-600 mb-1">Brand Name *</label>
-              <input v-model="brandForm.name" required type="text" placeholder="e.g. OnePlus" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+              <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Brand Name *</label>
+              <input v-model="brandForm.name" required type="text" placeholder="e.g. OnePlus" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
             </div>
 
             <div>
-              <label class="block font-bold text-slate-600 mb-1">Brand Logo / Image *</label>
-              <input @change="handleFileUpload($event, 'brand')" type="file" accept="image/*" class="w-full bg-slate-50 border rounded-xl p-2 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-white hover:file:bg-slate-900 cursor-pointer" />
-              <div v-if="brandForm.image" class="mt-2 flex items-center gap-2 bg-slate-50 p-2 rounded-xl border">
-                <img :src="getImageUrl(brandForm.image)" class="w-8 h-8 object-contain rounded border bg-white" />
-                <span class="text-[10px] text-slate-500 truncate max-w-[200px]">{{ brandForm.image }}</span>
+              <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Brand Logo / Image *</label>
+              <input @change="handleFileUpload($event, 'brand')" type="file" accept="image/*" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-slate-800 dark:file:bg-slate-700 file:text-white hover:file:bg-slate-900 cursor-pointer" />
+              <div v-if="brandForm.image" class="mt-2 flex items-center gap-2 bg-slate-50 dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-800">
+                <img :src="getImageUrl(brandForm.image)" class="w-8 h-8 object-contain rounded border border-slate-200 dark:border-slate-700 bg-white" />
+                <span class="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[200px]">{{ brandForm.image }}</span>
               </div>
             </div>
 
-            <button type="submit" :disabled="isUploading" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl uppercase transition-all cursor-pointer disabled:opacity-50">
+            <button type="submit" :disabled="isUploading" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl uppercase transition-all cursor-pointer disabled:opacity-50">
               {{ isUploading ? 'Uploading Image...' : (isEditing ? 'Update Brand' : 'Save Brand') }}
             </button>
           </form>
@@ -229,73 +251,73 @@
 
       <!-- SUB-PRODUCT MODAL -->
       <div v-if="modalType === 'subProduct'" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white text-slate-800 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-          <div class="flex justify-between items-center border-b pb-3">
-            <h3 class="font-bold text-sm uppercase">{{ isEditing ? 'Edit Sub-Product' : 'Add Sub-Product' }}</h3>
-            <button @click="closeModal" class="text-slate-400 hover:text-slate-700 text-sm font-bold">✕</button>
+        <div class="bg-white dark:bg-[#0d1322] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 w-full max-w-md rounded-2xl p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+          <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 class="font-bold text-sm uppercase text-slate-900 dark:text-slate-100">{{ isEditing ? 'Edit Sub-Product' : 'Add Sub-Product' }}</h3>
+            <button @click="closeModal" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-sm font-bold">✕</button>
           </div>
 
           <form @submit.prevent="submitSubProduct" class="space-y-3 text-xs">
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block font-bold text-slate-600 mb-1">Sub-Product ID *</label>
-                <input v-model="subProductForm.id" :disabled="isEditing" required type="text" placeholder="e.g. p1" class="w-full bg-slate-50 border rounded-xl p-2.5 disabled:bg-slate-200" />
+                <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Sub-Product ID *</label>
+                <input v-model="subProductForm.id" :disabled="isEditing" required type="text" placeholder="e.g. p1" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5 disabled:opacity-50" />
               </div>
               <div>
-                <label class="block font-bold text-slate-600 mb-1">Brand ID *</label>
-                <input v-model="subProductForm.brandId" required type="text" placeholder="e.g. b1" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+                <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Brand ID *</label>
+                <input v-model="subProductForm.brandId" required type="text" placeholder="e.g. b1" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
               </div>
             </div>
 
             <div>
-              <label class="block font-bold text-slate-600 mb-1">Product Name *</label>
-              <input v-model="subProductForm.name" required type="text" placeholder="e.g. iPhone 15 Pro" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+              <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Product Name *</label>
+              <input v-model="subProductForm.name" required type="text" placeholder="e.g. iPhone 15 Pro" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
             </div>
 
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block font-bold text-slate-600 mb-1">Price (₹) *</label>
-                <input v-model="subProductForm.price" required type="number" placeholder="93399" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+                <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Price (₹) *</label>
+                <input v-model="subProductForm.price" required type="number" placeholder="93399" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
               </div>
               
               <div>
-                <label class="block font-bold text-slate-600 mb-1">Product Image *</label>
-                <input @change="handleFileUpload($event, 'subProduct')" type="file" accept="image/*" class="w-full bg-slate-50 border rounded-xl p-1.5 text-[10px] file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer" />
+                <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Product Image *</label>
+                <input @change="handleFileUpload($event, 'subProduct')" type="file" accept="image/*" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-1.5 text-[10px] file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer" />
               </div>
             </div>
 
-            <div v-if="subProductForm.image" class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border">
-              <img :src="getImageUrl(subProductForm.image)" class="w-10 h-10 object-contain rounded border bg-white" />
-              <span class="text-[10px] text-slate-500 truncate max-w-[200px]">{{ subProductForm.image }}</span>
+            <div v-if="subProductForm.image" class="flex items-center gap-2 bg-slate-50 dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-800">
+              <img :src="getImageUrl(subProductForm.image)" class="w-10 h-10 object-contain rounded border border-slate-200 dark:border-slate-700 bg-white" />
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 truncate max-w-[200px]">{{ subProductForm.image }}</span>
             </div>
 
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block font-bold text-slate-600 mb-1">Storage</label>
-                <input v-model="subProductForm.storage" type="text" placeholder="256GB" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+                <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Storage</label>
+                <input v-model="subProductForm.storage" type="text" placeholder="256GB" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
               </div>
               <div>
-                <label class="block font-bold text-slate-600 mb-1">RAM</label>
-                <input v-model="subProductForm.ram" type="text" placeholder="8GB" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+                <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">RAM</label>
+                <input v-model="subProductForm.ram" type="text" placeholder="8GB" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
               </div>
             </div>
 
             <div class="grid grid-cols-3 gap-2">
               <div>
-                <label class="block font-bold text-slate-600 mb-1">Floor</label>
-                <input v-model="subProductForm.floor" type="number" placeholder="1" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+                <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Floor</label>
+                <input v-model="subProductForm.floor" type="number" placeholder="1" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
               </div>
               <div>
-                <label class="block font-bold text-slate-600 mb-1">Map X</label>
-                <input v-model="subProductForm.mapX" type="number" placeholder="520" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+                <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Map X</label>
+                <input v-model="subProductForm.mapX" type="number" placeholder="520" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
               </div>
               <div>
-                <label class="block font-bold text-slate-600 mb-1">Map Y</label>
-                <input v-model="subProductForm.mapY" type="number" placeholder="295" class="w-full bg-slate-50 border rounded-xl p-2.5" />
+                <label class="block font-bold text-slate-600 dark:text-slate-400 mb-1">Map Y</label>
+                <input v-model="subProductForm.mapY" type="number" placeholder="295" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100 rounded-xl p-2.5" />
               </div>
             </div>
 
-            <button type="submit" :disabled="isUploading" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl uppercase transition-all cursor-pointer disabled:opacity-50">
+            <button type="submit" :disabled="isUploading" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl uppercase transition-all cursor-pointer disabled:opacity-50">
               {{ isUploading ? 'Uploading Image...' : (isEditing ? 'Update Sub-Product' : 'Save Sub-Product') }}
             </button>
           </form>
@@ -308,7 +330,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import Sidebar from '../components/layout/Sidebar.vue';
+import Sidebar from '@/components/layout/Sidebar.vue';
 
 const API_BASE = 'http://localhost:5001';
 
@@ -502,3 +524,13 @@ const onImageError = (e) => {
 
 onMounted(fetchCatalog);
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.2);
+  border-radius: 9999px;
+}
+</style>

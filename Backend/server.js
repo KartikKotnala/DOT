@@ -66,7 +66,7 @@ app.post('/api/admin/upload', upload.single('file'), (req, res) => {
 // AUTHENTICATION & USER MANAGEMENT ROUTES
 // ---------------------------------------------------------
 
-// 1. REGISTER DETAILS & SEND 3-MINUTE OTP
+// 1. REGISTER DETAILS & SEND 3-MINUTE REGISTRATION OTP
 app.post('/api/auth/register', async (req, res) => {
   const { name, email, password, role } = req.body;
 
@@ -101,7 +101,7 @@ app.post('/api/auth/register', async (req, res) => {
     await transporter.sendMail({
       from: `"Kiosk Portal" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Your Portal OTP Verification Code',
+      subject: 'Your Portal Registration Verification Code',
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
           <h2 style="color: #1e293b;">Kiosk Portal Registration</h2>
@@ -112,7 +112,7 @@ app.post('/api/auth/register', async (req, res) => {
       `
     });
 
-    console.log(`[AUTH] Sent 3-min OTP (${otp}) to ${email}`);
+    console.log(`[AUTH] Sent 3-min Registration OTP (${otp}) to ${email}`);
     res.json({ success: true, message: 'OTP sent to your email! Code expires in 3 minutes.' });
 
   } catch (err) {
@@ -121,7 +121,7 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// 2. VERIFY OTP & AUTOMATICALLY APPROVE USER
+// 2. VERIFY REGISTRATION OTP & AUTOMATICALLY APPROVE USER
 app.post('/api/auth/verify-otp', async (req, res) => {
   const { email, otp } = req.body;
 
@@ -157,32 +157,103 @@ app.post('/api/auth/verify-otp', async (req, res) => {
   }
 });
 
-// 3. LOGIN
-app.post('/api/auth/login', async (req, res) => {
+// 3. LOGIN STEP 1: VERIFY EMAIL & PASSWORD FIRST, SAVE OTP TO DB, AND EMAIL USER
+app.post('/api/auth/send-login-otp', async (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password are required' });
+  }
 
   try {
     const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
-    if (rows.length === 0) return res.status(401).json({ error: 'User does not exist' });
+    if (rows.length === 0) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
 
     const user = rows[0];
 
     if (!user.is_verified) {
-      return res.status(401).json({ error: 'Email not verified. Please complete OTP verification.' });
-    }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Incorrect password' });
-    }
-
-    if (user.status === 'pending') {
-      return res.status(403).json({ error: 'Account pending manager approval. Please wait for access grant.' });
+      return res.status(401).json({ error: 'Account email is not verified.' });
     }
 
     if (user.status === 'rejected') {
       return res.status(403).json({ error: 'Your access request was rejected.' });
     }
+
+    // Verify Password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    // Generate 6-digit OTP & 3-Minute Expiration
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 3 * 60 * 1000);
+
+    // Save OTP to MySQL
+    await db.query(
+      'UPDATE users SET otp_code = ?, otp_expires_at = ? WHERE email = ?',
+      [otp, expiresAt, email]
+    );
+
+    // Dispatch Security Code Email
+    await transporter.sendMail({
+      from: `"Kiosk Portal" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: 'Your 2-Step Verification Login Code',
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+          <h2 style="color: #1e293b;">Kiosk Portal 2-Step Verification</h2>
+          <p>Your 6-digit login security code is:</p>
+          <h1 style="color: #2563eb; letter-spacing: 6px; font-size: 32px;">${otp}</h1>
+          <p style="color: #dc2626; font-size: 12px; font-weight: bold;">⚠️ Code expires in 3 minutes.</p>
+        </div>
+      `
+    });
+
+    console.log(`[AUTH] Sent 2FA Login OTP (${otp}) to ${email}`);
+    res.json({ success: true, message: 'Security code dispatched to email!' });
+
+  } catch (err) {
+    console.error('[AUTH Error] Send Login OTP:', err);
+    res.status(500).json({ error: 'Failed to process login request' });
+  }
+});
+
+// 4. LOGIN STEP 2: VERIFY 2FA OTP & AUTHENTICATE USER
+app.post('/api/auth/login-with-otp', async (req, res) => {
+  const { email, password, otp } = req.body;
+
+  if (!email || !password || !otp) {
+    return res.status(400).json({ error: 'Email, password, and 2FA OTP are required' });
+  }
+
+  try {
+    const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (rows.length === 0) return res.status(401).json({ error: 'Invalid login request' });
+
+    const user = rows[0];
+
+    // Verify Password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Incorrect password' });
+    }
+
+    // Verify 2FA OTP Code
+    if (!user.otp_code || user.otp_code !== otp) {
+      return res.status(400).json({ error: 'Invalid 2-Step Verification code' });
+    }
+
+    // Check OTP Expiration
+    if (new Date(user.otp_expires_at) < new Date()) {
+      await db.query('UPDATE users SET otp_code = NULL, otp_expires_at = NULL WHERE email = ?', [email]);
+      return res.status(400).json({ error: '2FA code has expired. Please try signing in again.' });
+    }
+
+    // Clear used OTP code
+    await db.query('UPDATE users SET otp_code = NULL, otp_expires_at = NULL WHERE email = ?', [email]);
 
     res.json({
       success: true,
@@ -190,7 +261,7 @@ app.post('/api/auth/login', async (req, res) => {
     });
 
   } catch (err) {
-    console.error('[AUTH Error] Login:', err);
+    console.error('[AUTH Error] Login with OTP:', err);
     res.status(500).json({ error: err.message });
   }
 });
