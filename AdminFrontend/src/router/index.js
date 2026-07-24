@@ -3,7 +3,8 @@ import Login from '../views/Login.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Products from '../views/Products.vue';
 import Roles from '../views/Roles.vue';
-import LiveOrders from '@/views/LiveOrders.vue'; // 👈 Match exact file name
+import LiveOrders from '@/views/LiveOrders.vue'; 
+import Users from '@/views/Users.vue';
 import { useAuth } from '../composables/useAuth.js';
 
 const routes = [
@@ -35,7 +36,12 @@ const routes = [
     name: 'Roles',
     component: Roles,
     meta: { requiresAuth: true }
-  }
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: Users
+  },
 ];
 
 const router = createRouter({

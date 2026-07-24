@@ -17,8 +17,8 @@
             📈
           </div>
           <div>
-            <h1 class="text-sm font-black tracking-wider uppercase text-slate-900 dark:text-slate-100">Analytics & Intelligence Hub</h1>
-            <p class="text-[10px] text-slate-400 font-medium -mt-0.5">Real-time Kiosk Network Performance & Telemetry</p>
+            <h1 class="text-sm font-black tracking-wider uppercase text-slate-900 dark:text-slate-100">Analytics</h1>
+            <p class="text-[10px] text-slate-400 font-medium -mt-0.5">Real-time Kiosk Network Performance </p>
           </div>
         </div>
 
@@ -30,7 +30,7 @@
             class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all cursor-pointer disabled:opacity-50 flex items-center gap-2 shadow-sm active:scale-95"
           >
             <span :class="{ 'animate-spin': isLoading }">🔄</span>
-            <span>{{ isLoading ? 'Recalculating...' : 'Sync Telemetry' }}</span>
+            <span>{{ isLoading ? 'Refreshing...' : 'Refresh' }}</span>
           </button>
         </div>
       </header>
@@ -109,11 +109,11 @@
           >
             <div class="flex items-center justify-between border-b pb-4 border-slate-100 dark:border-slate-800">
               <div>
-                <h2 class="text-base font-extrabold tracking-wide text-slate-900 dark:text-slate-100">Revenue Trajectory Stream</h2>
+                <h2 class="text-base font-extrabold tracking-wide text-slate-900 dark:text-slate-100">Total Revenue </h2>
                 <p class="text-xs text-slate-400 mt-0.5">Sequential sales growth curve across transaction timestamps</p>
               </div>
               <span class="text-xs font-bold text-blue-500 bg-blue-500/10 px-3 py-1 rounded-xl border border-blue-500/20">
-                Vector Plot
+                Graph Plot
               </span>
             </div>
 
@@ -150,7 +150,7 @@
 
             <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs text-slate-400 font-medium">
               <span>Gross Total: <strong class="font-black text-slate-900 dark:text-slate-100">₹{{ totalRevenue.toLocaleString() }}</strong></span>
-              <span class="text-emerald-500 font-bold">● Network Sync Active</span>
+              <span class="text-emerald-500 font-bold">● Network Active</span>
             </div>
           </div>
 
@@ -282,7 +282,7 @@
 
         </div>
 
-        <!-- QUICK ACCESS BANNER -->
+        <!-- QUICK ACCESS BANNER
         <div 
           class="p-6 rounded-2xl border shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-blue-900 via-slate-800 to-blue-900 dark:from-blue-950/40 dark:via-[#0d1322] dark:to-indigo-950/40 text-white border-blue-200/60 dark:border-blue-500/20"
         >
@@ -302,7 +302,7 @@
           >
             Go to Live Orders ➔
           </router-link>
-        </div>
+        </div> -->
 
       </main>
     </div>

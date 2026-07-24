@@ -60,8 +60,7 @@
         </h2>
 
         <p class="text-main/60 max-w-md">
-          Discover futuristic products designed with minimalism,
-          performance and precision.
+          Every visit brings new experiences, exciting brands, and lasting memories.
         </p>
 
         <div class="flex gap-2 mt-6">

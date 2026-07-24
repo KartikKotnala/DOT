@@ -74,9 +74,14 @@ app.post('/api/auth/register', async (req, res) => {
     return res.status(400).json({ error: 'Name, email, and password are required' });
   }
 
-  const userRole = role === 'admin' ? 'admin' : 'agent';
-
   try {
+    // Dynamically validate requested role against roles table in MySQL
+    const [availableRoles] = await db.query('SELECT role_key FROM roles');
+    const validRoleKeys = availableRoles.map(r => r.role_key);
+    
+    // Default fallback to 'agent' if specified role key doesn't exist
+    const userRole = validRoleKeys.includes(role) ? role : 'agent';
+
     const [existing] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
     if (existing.length > 0 && existing[0].is_verified) {
       return res.status(400).json({ error: 'User with this email already exists. Please log in.' });
@@ -121,7 +126,7 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// 2. VERIFY REGISTRATION OTP & AUTOMATICALLY APPROVE USER
+// 2. VERIFY REGISTRATION OTP (Keep status = 'pending' for Manager Approval!)
 app.post('/api/auth/verify-otp', async (req, res) => {
   const { email, otp } = req.body;
 
@@ -140,15 +145,15 @@ app.post('/api/auth/verify-otp', async (req, res) => {
       return res.status(400).json({ error: 'OTP code has expired (3 min limit). Please request a new code.' });
     }
 
-    // Set is_verified = 1 and auto-set status = 'approved' upon verification
+    // Set is_verified = 1, but KEEP status = "pending" so Manager MUST approve it first!
     await db.query(
-      'UPDATE users SET is_verified = 1, status = "approved", otp_code = NULL, otp_expires_at = NULL WHERE email = ?',
+      'UPDATE users SET is_verified = 1, status = "pending", otp_code = NULL, otp_expires_at = NULL WHERE email = ?',
       [email]
     );
 
     res.json({
       success: true,
-      message: 'Email verified and account approved successfully! You can now sign in.'
+      message: 'Email verified! Your access request is now pending Manager approval.'
     });
 
   } catch (err) {
@@ -157,7 +162,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
   }
 });
 
-// 3. LOGIN STEP 1: VERIFY EMAIL & PASSWORD FIRST, SAVE OTP TO DB, AND EMAIL USER
+// 3. LOGIN STEP 1: CHECK EMAIL & PASSWORD AND REJECT IF PENDING MANAGER APPROVAL
 app.post('/api/auth/send-login-otp', async (req, res) => {
   const { email, password } = req.body;
 
@@ -174,11 +179,16 @@ app.post('/api/auth/send-login-otp', async (req, res) => {
     const user = rows[0];
 
     if (!user.is_verified) {
-      return res.status(401).json({ error: 'Account email is not verified.' });
+      return res.status(401).json({ error: 'Account email is not verified. Please complete email verification.' });
+    }
+
+    // 🔒 MANAGER APPROVAL GATEWAY
+    if (user.status === 'pending') {
+      return res.status(403).json({ error: 'Account pending Manager approval. Please wait for access to be granted.' });
     }
 
     if (user.status === 'rejected') {
-      return res.status(403).json({ error: 'Your access request was rejected.' });
+      return res.status(403).json({ error: 'Your access request was rejected by system management.' });
     }
 
     // Verify Password
@@ -230,7 +240,14 @@ app.post('/api/auth/login-with-otp', async (req, res) => {
   }
 
   try {
-    const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    const [rows] = await db.query(
+      `SELECT u.*, r.permissions as role_permissions 
+       FROM users u 
+       LEFT JOIN roles r ON u.role = r.role_key 
+       WHERE u.email = ?`,
+      [email]
+    );
+
     if (rows.length === 0) return res.status(401).json({ error: 'Invalid login request' });
 
     const user = rows[0];
@@ -255,13 +272,217 @@ app.post('/api/auth/login-with-otp', async (req, res) => {
     // Clear used OTP code
     await db.query('UPDATE users SET otp_code = NULL, otp_expires_at = NULL WHERE email = ?', [email]);
 
+    // Use user custom permissions if present, otherwise fallback to role default permissions
+    const effectivePermissions = user.permissions || user.role_permissions || '{}';
+
     res.json({
       success: true,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role }
+      user: { 
+        id: user.id, 
+        name: user.name, 
+        email: user.email, 
+        role: user.role, 
+        permissions: effectivePermissions 
+      }
     });
 
   } catch (err) {
     console.error('[AUTH Error] Login with OTP:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------------------------
+// MANAGER USER DIRECTORY & ACCESS CONTROL ENDPOINTS
+// ---------------------------------------------------------
+
+// GET: Fetch all registered users for Manager inspection
+app.get('/api/admin/users', async (req, res) => {
+  try {
+    const [users] = await db.query(
+      'SELECT id, name, email, role, status, is_verified, permissions, createdAt FROM users ORDER BY createdAt DESC'
+    );
+    res.json(users);
+  } catch (err) {
+    console.error('[API Error] /api/admin/users:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+//  POST: Create New User from Admin Panel
+app.post('/api/admin/users', async (req, res) => {
+  const { name, email, phone, password, role } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: 'Name, email, and password are required' });
+  }
+
+  try {
+    const [existing] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (existing.length > 0) {
+      return res.status(400).json({ error: 'User with this email already exists.' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await db.query(
+      'INSERT INTO users (name, email, phone, password, role, is_verified, status) VALUES (?, ?, ?, ?, ?, 1, "approved")',
+      [name, email, phone || null, hashedPassword, role || 'agent']
+    );
+
+    res.status(201).json({ success: true, message: 'User created successfully' });
+  } catch (err) {
+    console.error('[API Error] Create User:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+//  PUT: Update User Details (Name, Email, Phone, Role)
+app.put('/api/admin/users/:id', async (req, res) => {
+  const { name, email, phone, role } = req.body;
+
+  try {
+    await db.query(
+      'UPDATE users SET name = ?, email = ?, phone = ?, role = ? WHERE id = ?',
+      [name, email, phone || null, role, req.params.id]
+    );
+
+    res.json({ success: true, message: 'User details updated successfully' });
+  } catch (err) {
+    console.error('[API Error] Update User details:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT: Update User Approval Status ('pending', 'approved', 'rejected')
+app.put('/api/admin/users/:id/status', async (req, res) => {
+  const { status } = req.body;
+  if (!['pending', 'approved', 'rejected'].includes(status)) {
+    return res.status(400).json({ error: 'Invalid status value' });
+  }
+
+  try {
+    await db.query('UPDATE users SET status = ? WHERE id = ?', [status, req.params.id]);
+    res.json({ success: true, message: `User status updated to ${status}` });
+  } catch (err) {
+    console.error('[API Error] Update user status:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT: Change or Promote User Role
+app.put('/api/admin/users/:id/role', async (req, res) => {
+  const { role } = req.body;
+
+  try {
+    const [availableRoles] = await db.query('SELECT role_key FROM roles');
+    const validRoleKeys = availableRoles.map(r => r.role_key);
+
+    if (!validRoleKeys.includes(role)) {
+      return res.status(400).json({ error: 'Specified role key does not exist' });
+    }
+
+    await db.query('UPDATE users SET role = ? WHERE id = ?', [role, req.params.id]);
+    res.json({ success: true, message: `User role updated to ${role}` });
+  } catch (err) {
+    console.error('[API Error] Update user role:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT: Save User Feature Access Permissions Matrix (Manager Only)
+app.put('/api/admin/users/:id/permissions', async (req, res) => {
+  const { permissions } = req.body;
+  const permissionsJson = typeof permissions === 'object' ? JSON.stringify(permissions) : permissions;
+
+  try {
+    await db.query('UPDATE users SET permissions = ? WHERE id = ?', [permissionsJson, req.params.id]);
+    console.log(`[AUTH] Updated access rights for User ID ${req.params.id}`);
+    res.json({ success: true, message: 'Permissions updated successfully' });
+  } catch (err) {
+    console.error('[API Error] Save user permissions:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------------------------
+// DYNAMIC DATABASE-DRIVEN ROLE MANAGEMENT
+// ---------------------------------------------------------
+
+// 1. GET: All Roles directly from database
+app.get('/api/admin/roles', async (req, res) => {
+  try {
+    const [dbRoles] = await db.query('SELECT * FROM roles ORDER BY id ASC');
+    
+    // Format JSON string column into JavaScript objects
+    const formattedRoles = dbRoles.map(r => ({
+      ...r,
+      permissions: typeof r.permissions === 'string' ? JSON.parse(r.permissions) : r.permissions
+    }));
+
+    res.json(formattedRoles);
+  } catch (err) {
+    console.error('[API Error] Fetch roles:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 2. POST: Create a New Role in MySQL
+app.post('/api/admin/roles', async (req, res) => {
+  const { name, permissions } = req.body;
+  if (!name) return res.status(400).json({ error: 'Role name is required' });
+
+  const role_key = name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  const permissionsJson = JSON.stringify(permissions || {});
+
+  try {
+    await db.query(
+      'INSERT INTO roles (role_key, name, permissions) VALUES (?, ?, ?)',
+      [role_key, name, permissionsJson]
+    );
+    res.status(201).json({ success: true, message: 'New role created in MySQL' });
+  } catch (err) {
+    console.error('[API Error] Create role:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 3. PUT: Update Role Permissions Matrix in MySQL
+app.put('/api/admin/roles/:role_key', async (req, res) => {
+  const { permissions } = req.body;
+  const permissionsJson = JSON.stringify(permissions);
+
+  try {
+    await db.query(
+      'UPDATE roles SET permissions = ? WHERE role_key = ?',
+      [permissionsJson, req.params.role_key]
+    );
+    res.json({ success: true, message: 'Role permissions updated in MySQL' });
+  } catch (err) {
+    console.error('[API Error] Update role permissions:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 4. DELETE: Remove Dynamic Role Safely
+app.delete('/api/admin/roles/:role_key', async (req, res) => {
+  const roleKey = req.params.role_key;
+
+  // Protect system critical roles from deletion
+  if (['manager', 'admin', 'agent'].includes(roleKey.toLowerCase())) {
+    return res.status(400).json({ error: 'Built-in system roles cannot be deleted.' });
+  }
+
+  try {
+    // 1. Reassign existing users with this role to 'agent' first (prevents FK errors)
+    await db.query('UPDATE users SET role = "agent" WHERE role = ?', [roleKey]);
+
+    // 2. Now safely delete the role from the roles table
+    await db.query('DELETE FROM roles WHERE role_key = ?', [roleKey]);
+
+    console.log(`[AUTH] Deleted role '${roleKey}' and reassigned orphaned users to 'agent'`);
+    res.json({ success: true, message: 'Role deleted successfully' });
+  } catch (err) {
+    console.error('[API Error] Delete role:', err);
     res.status(500).json({ error: err.message });
   }
 });

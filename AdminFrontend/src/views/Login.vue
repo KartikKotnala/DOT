@@ -138,7 +138,10 @@
                 Agent (Field Operations)
               </option>
               <option value="admin" class="bg-slate-900 text-slate-100 py-1 font-semibold">
-                Admin (System Management)
+                Admin (System Operations)
+              </option>
+              <option value="manager" class="bg-slate-900 text-slate-100 py-1 font-semibold">
+                Manager (System Manager)
               </option>
             </select>
             
@@ -279,7 +282,7 @@ const handleLoginSubmit = async () => {
     if (!res.ok) throw new Error(data.error);
 
     loginForm.value.otp = '';
-    show2FAModal.value = true; // Open the verification pop-up modal
+    show2FAModal.value = true; // Open 2FA modal
   } catch (err) {
     errorMsg.value = err.message;
   } finally {
@@ -354,7 +357,7 @@ const handleRegisterVerify = async () => {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error);
 
-    successMsg.value = 'Account verified and created! You can now sign in.';
+    successMsg.value = 'Account created and verified! You can now sign in.';
     mode.value = 'login';
     registrationStep.value = 1;
   } catch (err) {
